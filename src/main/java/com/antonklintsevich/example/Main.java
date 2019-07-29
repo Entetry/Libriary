@@ -7,37 +7,29 @@ import java.util.List;
 import org.hibernate.Session;
 
 import common.BookDto;
+import common.DtoConverter;
+import common.UserDto;
 import entity.Book;
 import entity.Genres;
+import persistense.BookRepository;
 import persistense.DbUnit;
-import persistense.Repository;
+import persistense.UserRepository;
+import common.DtoConverter;
 
 public class Main {
 	public static void main(String [ ] args) {
-		Session session=DbUnit.getSession();
-        List <BookDto> bookdtolist = new ArrayList<BookDto>();
-        Repository repos=new Repository();
- 
-     Book book=new Book();
-     List <Book> knigi=new ArrayList<Book>();
-     for(int i=0;i<10;i++) {
-     book.setAuthor("Kog"+i);
-     book.setDateAdd(new Date());
-     book.setGenre("Horror");
-     book.setName("KEK"+i);
-     book.setNumberOfPages(123+i*5);
-     knigi.add(book);
+         UserDto userdto = new UserDto();
+         userdto.setDob(new Date());
+         userdto.setEmail("kdkdk@ggg.com");
+         userdto.setFirstname("Anton");
+         userdto.setLastname("Klintcevich");
+	    
+	    UserRepository userRepository = new UserRepository();
+	    
+	    userRepository.create(userdto, "123");
+	   
      
-     }
-     
-     for(Book b : knigi) {
-    	 bookdtolist.add(repos.constructBookDTO(b));
-     }
-
-     for(int i=0;i<knigi.size();i++) {
-    	 repos.create(bookdtolist.get(i));
-     }
 	}
-	
+	  
 
 }
