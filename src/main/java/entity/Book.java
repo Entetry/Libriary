@@ -13,8 +13,8 @@ import javax.persistence.Table;
 
 import common.BookDto;
 
-@Entity(name="Book")
-@Table(name="book")
+@Entity(name = "Book")
+@Table(name = "book")
 public class Book implements Serializable {
     /**
      * 
@@ -28,8 +28,6 @@ public class Book implements Serializable {
         this.bookname = name;
     };
 
-  
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +36,9 @@ public class Book implements Serializable {
     private Date dateAdd;
     private Genres genre;
     private int numberOfPages;
-
+    
+    
+    
     public Long getId() {
         return id;
     }
@@ -76,9 +76,8 @@ public class Book implements Serializable {
     }
 
     public void setGenre(Genres genre) {
-      
-           this.genre=genre;
-        }
+
+        this.genre = genre;
     }
 
     public int getNumberOfPages() {

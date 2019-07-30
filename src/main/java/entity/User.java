@@ -1,9 +1,11 @@
 package entity;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,16 +19,15 @@ import javax.persistence.Table;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
-    @OneToMany(cascade = CascadeType.ALL,
-    orphanRemoval = true)
-    @JoinColumn(name="user_id")
-    private Set<Book> books;
+    @OneToMany(mappedBy = "id")
+    private Set<Book> books=new HashSet<Book>();
     public String getFirstname() {
         return firstname;
     }

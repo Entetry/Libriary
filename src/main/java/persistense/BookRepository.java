@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import common.BookDto;
 import common.DtoConverter;
 import entity.Book;
+import entity.User;
 
 public class BookRepository {
 
@@ -23,10 +24,8 @@ public class BookRepository {
         return bookDTOs;
     }
 
-
-
     public static List<Book> getAllBooks() {
-        Session session = DbUnit.getSession();
+        Session session = DbUnit.getSessionFactory().getCurrentSession();
         List<Book> books = new ArrayList<Book>();
         try {
 
@@ -42,7 +41,7 @@ public class BookRepository {
     }
 
     public void delete(Long id) {
-        Session session = DbUnit.getSession();
+        Session session = DbUnit.getSessionFactory().getCurrentSession();
         System.out.println("Deleting  record...");
         session.beginTransaction();
         try {
@@ -60,7 +59,7 @@ public class BookRepository {
     }
 
     public void update(BookDto dto) {
-        Session session = DbUnit.getSession();
+        Session session = DbUnit.getSessionFactory().getCurrentSession();
         try {
 
             System.out.println("Updating author...");
@@ -75,9 +74,9 @@ public class BookRepository {
     }
 
     public void create(BookDto dto) {
-        Session session = DbUnit.getSession();
+        Session session = DbUnit.getSessionFactory().getCurrentSession();
         try {
-            System.out.println("Creating record...");
+            System.out.println("Creating record Book...");
             Book book = DtoConverter.constructBookFromDto(dto);
             book.setDateAdd(new Date());
             session.beginTransaction();
@@ -86,5 +85,18 @@ public class BookRepository {
         } finally {
             session.close();
         }
+    }
+
+    public Book getBookById(Long id, Session session) {
+        List<Book> books = new ArrayList<Book>();
+        Book bookResult = new Book();
+        Query query = session.createQuery("from Book where id=:id");
+        query.setParameter("id", id);
+        List<Book> bookList = query.list();
+        for (Book book : bookList) {
+            bookResult = book;
+        }
+        return bookResult;
+
     }
 }
