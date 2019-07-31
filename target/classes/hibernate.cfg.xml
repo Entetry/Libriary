@@ -14,6 +14,7 @@
  	<property name="pool.size">1</property>
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+ <property name="hibernate.current_session_context_class">thread</property>
  
         <!-- Print executed SQL to stdout -->
         <property name="show_sql">true</property>

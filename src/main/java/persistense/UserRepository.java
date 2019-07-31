@@ -58,8 +58,7 @@ public class UserRepository {
     }
     public Set<Book> getAllBooks(Long id, Session session){
         
-        try {
-            
+     
             Query query = session.createQuery("from User where id=:id");
             query.setParameter("id", id);
             List<User> fd = query.list();
@@ -69,9 +68,7 @@ public class UserRepository {
             }
             
             return userBooks;
-        } finally {
-            session.close();
-        }
+     
         }
     public void delete(Long id) {
         Session session = DbUnit.getSessionFactory().getCurrentSession();

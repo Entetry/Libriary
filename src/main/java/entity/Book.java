@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,12 +25,14 @@ public class Book implements Serializable {
     public Book() {
     };
 
-    public Book(String name) {
+    public Book(String name,String author,Date dateAdd,Genres genre,int numberOfPages) {
         this.bookname = name;
+        this.author=author;
+        this.dateAdd=dateAdd;
+        this.genre=genre;
+        this.numberOfPages=numberOfPages;
     };
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   
     private Long id;
     private String bookname;
     private String author;
@@ -38,7 +41,10 @@ public class Book implements Serializable {
     private int numberOfPages;
     
     
-    
+
+    @Id
+    @GeneratedValue
+    @Column(name = "book_id",insertable = false, updatable = false)
     public Long getId() {
         return id;
     }

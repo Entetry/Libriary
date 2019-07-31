@@ -11,22 +11,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity(name="User")
 @Table(name="\"user\"")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+   public User() {}
+   public User(String firstname,String lastname,Date dob,String email,String password) {
+       this.firstname=firstname;
+       this.lastname=lastname;
+       this.dob=dob;
+       this.email=email;
+       this.password=password;
+   }
     private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
-    @OneToMany(mappedBy = "id")
+ 
     private Set<Book> books=new HashSet<Book>();
     public String getFirstname() {
         return firstname;
@@ -67,21 +73,28 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
+   
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_book",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
     public Set<Book> getBooks() {
         return books;
     }
 
     public void setBooks(Set<Book> books) {
         this.books = books;
+    }
+    @Id
+    @GeneratedValue
+    @Column(name = "user_id",insertable = false, updatable = false)
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
     
 

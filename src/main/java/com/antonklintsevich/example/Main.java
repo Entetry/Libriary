@@ -2,6 +2,7 @@ package com.antonklintsevich.example;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import common.DtoConverter;
 import common.UserDto;
 import entity.Book;
 import entity.Genres;
+import entity.User;
 import persistense.BookRepository;
 import persistense.DbUnit;
 import persistense.UserRepository;
@@ -24,12 +26,8 @@ public class Main {
 	    UserRepository userRepository = new UserRepository();
 	    BookRepository bookRepositroy = new BookRepository();
 	    UserService userServise=new UserService(userRepository, bookRepositroy);
-	    userServise.addBooktoUser(1l, 1l);
+	    userServise.addBooktoUser(19l, 21l);
 	    
-	   Set<Book>userBooks = userRepository.getAllBooks(1l);
-	   for(Book book:userBooks) {
-	       System.out.println(book.getName());
-	   }
 	}
 	  
 

@@ -24,17 +24,17 @@ public class UserService {
 
     public void addBooktoUser(Long userId, Long bookId) {
         Session session = DbUnit.getSessionFactory().openSession();
-
+        
         System.out.println("Adding a book...");
-        Transaction transaction = session.beginTransaction();
+      Transaction transaction=  session.beginTransaction();
         User user = _userRepository.getCurrentUser(userId, session);
-        Set<Book> booksToAdd = new HashSet<Book>();
+        
+        Set<Book> booksToAdd = _userRepository.getAllBooks(19l, session);
+        
         booksToAdd.add(_bookRepository.getBookById(bookId, session));
 
         user.setBooks(booksToAdd);
-        session.save(user);
-        session.evict(user);
-        session.update(user);
+        session.saveOrUpdate(user);
         transaction.commit();
 
     }
