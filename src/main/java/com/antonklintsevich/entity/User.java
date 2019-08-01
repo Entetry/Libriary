@@ -1,4 +1,4 @@
-package entity;
+package com.antonklintsevich.entity;
 
 import java.util.Date;
 import java.util.HashSet;

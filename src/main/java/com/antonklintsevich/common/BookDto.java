@@ -1,6 +1,6 @@
-package common;
+package com.antonklintsevich.common;
 
-import entity.Genres;
+import com.antonklintsevich.entity.Genres;
 public class BookDto {
 	
 	public BookDto() {

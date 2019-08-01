@@ -1,17 +1,30 @@
-package common;
+package com.antonklintsevich.common;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import entity.Book;
+import com.antonklintsevich.entity.Book;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserDto {
+public class UserDto implements Serializable {
+    
+    @JsonProperty
     private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private Set<Book> books;
+    public UserDto(Long id, String firstname,String lastname,Date dob,String email) {
+        this.id=id;
+        this.dob=dob;
+        this.firstname=firstname;
+        this.lastname=lastname;
+        this.email=email;
+        this.books=books;
+    }
+    public UserDto() {}
     public String getFirstname() {
         return firstname;
     }

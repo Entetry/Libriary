@@ -1,4 +1,4 @@
-package persistense;
+package com.antonklintsevich.persistense;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,24 +8,25 @@ import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
-import common.BookDto;
-import common.DtoConverter;
-import common.UserDto;
-import entity.Book;
-import entity.User;
-
+import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.common.DtoConverter;
+import com.antonklintsevich.common.UserDto;
+import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.User;
+@Repository
 public class UserRepository {
-    public List<UserDto> getAllUserAsUserDTO() {
+    public List<UserDto> getAllUserAsUserDTO(Session session) {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
-        for (User user : UserRepository.getAllUsers()) {
+        for (User user : getAllUsers(session)) {
             userDtos.add(DtoConverter.constructUserDto(user));
         }
 
         return userDtos;
     }
-
+    
     public User getCurrentUser(Long id, Session session) {
         List<User> users = new ArrayList<User>();
 
@@ -40,20 +41,14 @@ public class UserRepository {
 
     }
 
-    public static List<User> getAllUsers() {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
+    public  List<User> getAllUsers(Session session) {
         List<User> users = new ArrayList<User>();
-        try {
-
             Query query = session.createQuery("from User");
             List<User> fd = query.list();
             for (User b : fd) {
                 users.add(b);
             }
             return users;
-        } finally {
-            session.close();
-        }
 
     }
 
@@ -64,52 +59,32 @@ public class UserRepository {
         return user.getBooks();
     }
 
-    public void delete(Long id) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
+    public void delete(Long id,Session session) {
         System.out.println("Deleting  record...");
-        session.beginTransaction();
-        try {
             String hql = "delete from User where id = :id";
             Query q = session.createQuery(hql);
             q.setParameter("id", id);
             q.executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
     }
 
-    public void update(UserDto dto, String password) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
-        try {
-
+    public void update(Long userId,String firstname,String lastname,Session session) {
+     
             System.out.println("Updating author...");
-            User user = DtoConverter.constructUserFromDto(dto, password);
-            user.setFirstname(dto.getFirstname());
-            user.setLastname(dto.getLastname());
-            session.beginTransaction();
+            User user =getCurrentUser(userId, session);
+            user.setFirstname(firstname);
+            user.setLastname(lastname);
             session.saveOrUpdate(user);
-            session.getTransaction().commit();
-        } finally {
-            session.close();
-        }
+        
+       
     }
 
-    public void create(UserDto dto, String password) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
-        try {
+    public void create(UserDto dto, String password,Session session) {
+      
             System.out.println("Creating record...");
             User user = DtoConverter.constructUserFromDto(dto, password);
             user.setPassword(password);
-            session.beginTransaction();
             session.save(user);
-            session.getTransaction().commit();
-        } finally {
-            session.close();
-        }
+      
     }
 
 }

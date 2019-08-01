@@ -1,4 +1,4 @@
-package persistense;
+package com.antonklintsevich.persistense;
 
 
 

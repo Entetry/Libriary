@@ -1,7 +1,7 @@
-package common;
+package com.antonklintsevich.common;
 
-import entity.Book;
-import entity.User;
+import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.User;
 
 public class DtoConverter {
     public static BookDto constructBookDTO(Book book) {
@@ -41,7 +41,7 @@ public class DtoConverter {
        user.setDob(dto.getDob());
        user.setEmail(dto.getEmail());
        user.setFirstname(dto.getFirstname());
-       dto.setLastname(dto.getLastname());
+       user.setLastname(dto.getLastname());
        if (dto.getId() !=null) {
            user.setId(dto.getId());
        }

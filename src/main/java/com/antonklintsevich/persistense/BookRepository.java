@@ -1,4 +1,4 @@
-package persistense;
+package com.antonklintsevich.persistense;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,12 +6,13 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
-import common.BookDto;
-import common.DtoConverter;
-import entity.Book;
-import entity.User;
+import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.common.DtoConverter;
+import com.antonklintsevich.entity.Book;
 
+@Repository
 public class BookRepository {
 
     public List<BookDto> getAllBookAsBookDTO() {
