@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -37,6 +39,8 @@ public class Book implements Serializable {
     private String bookname;
     private String author;
     private Date dateAdd;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 12)
     private Genres genre;
     private int numberOfPages;
     
@@ -44,7 +48,7 @@ public class Book implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "book_id",insertable = false, updatable = false)
+    @Column(name = "book_id")
     public Long getId() {
         return id;
     }

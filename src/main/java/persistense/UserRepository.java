@@ -19,7 +19,7 @@ public class UserRepository {
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
-        for (User user :UserRepository.getAllUsers()) {
+        for (User user : UserRepository.getAllUsers()) {
             userDtos.add(DtoConverter.constructUserDto(user));
         }
 
@@ -28,16 +28,16 @@ public class UserRepository {
 
     public User getCurrentUser(Long id, Session session) {
         List<User> users = new ArrayList<User>();
-        
-            User userResult = new User();
-            Query query = session.createQuery("from User where id=:id");
-            query.setParameter("id", id);
-            List<User> userList = query.list();
-            for (User user : userList) {
-                userResult = user;
-            }
-            return userResult;
-       
+
+        User userResult = new User();
+        Query query = session.createQuery("from User where id=:id");
+        query.setParameter("id", id);
+        List<User> userList = query.list();
+        for (User user : userList) {
+            userResult = user;
+        }
+        return userResult;
+
     }
 
     public static List<User> getAllUsers() {
@@ -54,22 +54,16 @@ public class UserRepository {
         } finally {
             session.close();
         }
-        
+
     }
-    public Set<Book> getAllBooks(Long id, Session session){
-        
-     
-            Query query = session.createQuery("from User where id=:id");
-            query.setParameter("id", id);
-            List<User> fd = query.list();
-            Set<Book> userBooks = new HashSet<Book>();
-            for (User b : fd) {
-                userBooks.addAll(b.getBooks());
-            }
-            
-            return userBooks;
-     
-        }
+
+    public Set<Book> getAllBooks(Long id, Session session) {
+        Query query = session.createQuery("from User where id=:id");
+        query.setParameter("id", id);
+        User user = (User) query.uniqueResult();
+        return user.getBooks();
+    }
+
     public void delete(Long id) {
         Session session = DbUnit.getSessionFactory().getCurrentSession();
         System.out.println("Deleting  record...");
@@ -88,12 +82,12 @@ public class UserRepository {
         }
     }
 
-    public void update(UserDto dto,String password) {
+    public void update(UserDto dto, String password) {
         Session session = DbUnit.getSessionFactory().getCurrentSession();
         try {
 
             System.out.println("Updating author...");
-            User user =DtoConverter.constructUserFromDto(dto,password);
+            User user = DtoConverter.constructUserFromDto(dto, password);
             user.setFirstname(dto.getFirstname());
             user.setLastname(dto.getLastname());
             session.beginTransaction();
@@ -103,12 +97,12 @@ public class UserRepository {
             session.close();
         }
     }
-    
-    public void create(UserDto dto,String password) {
+
+    public void create(UserDto dto, String password) {
         Session session = DbUnit.getSessionFactory().getCurrentSession();
         try {
             System.out.println("Creating record...");
-            User user =DtoConverter.constructUserFromDto(dto, password);
+            User user = DtoConverter.constructUserFromDto(dto, password);
             user.setPassword(password);
             session.beginTransaction();
             session.save(user);
@@ -117,5 +111,5 @@ public class UserRepository {
             session.close();
         }
     }
- 
+
 }

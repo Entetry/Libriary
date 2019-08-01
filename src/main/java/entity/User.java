@@ -12,28 +12,33 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity(name="User")
-@Table(name="\"user\"")
+@Entity(name = "User")
+@Table(name = "\"user\"")
 public class User {
-   public User() {}
-   public User(String firstname,String lastname,Date dob,String email,String password) {
-       this.firstname=firstname;
-       this.lastname=lastname;
-       this.dob=dob;
-       this.email=email;
-       this.password=password;
-   }
+    public User() {
+    }
+
+    public User(String firstname, String lastname, Date dob, String email, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.dob = dob;
+        this.email = email;
+        this.password = password;
+    }
+
     private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
- 
-    private Set<Book> books=new HashSet<Book>();
+
+    private Set<Book> books = new HashSet<>();
+
     public String getFirstname() {
         return firstname;
     }
@@ -73,13 +78,9 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-   
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_book",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_book", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     public Set<Book> getBooks() {
         return books;
     }
@@ -87,15 +88,20 @@ public class User {
     public void setBooks(Set<Book> books) {
         this.books = books;
     }
+
+    public void addBook(Book book) {
+        this.books.add(book);
+    }
+
     @Id
     @GeneratedValue
-    @Column(name = "user_id",insertable = false, updatable = false)
+    @Column(name = "user_id", insertable = false, updatable = false)
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
-    
 
 }
