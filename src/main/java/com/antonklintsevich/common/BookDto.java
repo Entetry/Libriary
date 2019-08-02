@@ -1,6 +1,7 @@
 package com.antonklintsevich.common;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.antonklintsevich.entity.Genres;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,7 +20,8 @@ public class BookDto implements Serializable{
 	private Genres genre;
 	@JsonProperty
 	private int numberOfPages;
-	
+	@JsonProperty
+    private Date dateAdd;
 	
 	
 	public Long getId() {
@@ -62,5 +64,13 @@ public class BookDto implements Serializable{
 	public void setNumberOfPages(int numberOfPages) {
 		this.numberOfPages = numberOfPages;
 	}
+
+    public Date getDateAdd() {
+        return dateAdd;
+    }
+
+    public void setDateAdd(Date dateAdd) {
+        this.dateAdd = dateAdd;
+    }
 
 }

@@ -29,9 +29,9 @@ public class UserRepository {
     }
 
     public  List<User> getAllUsers(Session session) {
-        List<User> users = new ArrayList<User>();
+        List<User> users ;
             Query query = session.createQuery("from User");
-            users = query.list();
+            users = (List<User>)query.list();
             return users;
 
     }
@@ -51,24 +51,23 @@ public class UserRepository {
             q.executeUpdate();
     }
 
-    public void update(Long userId,User userFromDto,Session session) {
+    public void update(Long userId,User user,Session session) {
      
             System.out.println("Updating author...");
-            User user =getCurrentUser(userId, session);
-            user.setFirstname(userFromDto.getFirstname());
-            user.setLastname(userFromDto.getLastname());
-            user.setPassword(userFromDto.getPassword());
-            user.setEmail(userFromDto.getEmail());
-            user.setDob(userFromDto.getDob());
-            session.saveOrUpdate(user);
+            User currentUser =getCurrentUser(userId, session);
+            currentUser.setFirstname(user.getFirstname());
+            currentUser.setLastname(user.getLastname());
+            currentUser.setPassword(user.getPassword());
+            currentUser.setEmail(user.getEmail());
+            currentUser.setDob(user.getDob());
+            session.saveOrUpdate(currentUser);
         
        
     }
 
-    public void create(UserDto dto,Session session) {
+    public void create(User user,Session session) {
       
             System.out.println("Creating record...");
-            User user = DtoConverter.constructUserFromDto(dto);
             session.save(user);
       
     }

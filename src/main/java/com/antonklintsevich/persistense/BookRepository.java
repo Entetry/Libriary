@@ -11,92 +11,54 @@ import org.springframework.stereotype.Repository;
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
 import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.User;
 
 @Repository
 public class BookRepository {
 
-    public List<BookDto> getAllBookAsBookDTO() {
-        List<BookDto> bookDTOs = new ArrayList<BookDto>();
 
-        for (Book book : BookRepository.getAllBooks()) {
-            bookDTOs.add(DtoConverter.constructBookDTO(book));
-        }
-
-        return bookDTOs;
-    }
-
-    public static List<Book> getAllBooks() {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
+    public static List<Book> getAllBooks(Session session) {
         List<Book> books = new ArrayList<Book>();
-        try {
-
             Query query = session.createQuery("from Book");
-            List<Book> fd = query.list();
-            for (Book b : fd) {
-                books.add(b);
-            }
-        } finally {
-            session.close();
-        }
+            books = query.list();
+            
+       
         return books;
     }
 
-    public void delete(Long id) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
-        System.out.println("Deleting  record...");
-        session.beginTransaction();
-        try {
+    public void delete(Long id,Session session) {
+       
             String hql = "delete from Book where id = :id";
             Query q = session.createQuery(hql);
             q.setParameter("id", id);
             q.executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
+        
+       
     }
 
-    public void update(BookDto dto) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
-        try {
-
-            System.out.println("Updating author...");
-            Book book = DtoConverter.constructBookFromDto(dto);
-            book.setDateAdd(new Date());
-            session.beginTransaction();
-            session.saveOrUpdate(book);
-            session.getTransaction().commit();
-        } finally {
-            session.close();
-        }
+    public void update(Long bookId,BookDto dto,Session session) {
+        System.out.println("Updating author...");
+        Book book =getBookById(bookId, session);
+        book.setAuthor(dto.getAuthor());
+        book.setDateAdd(dto.getDateAdd());
+        book.setGenre(dto.getGenre());
+        book.setName(dto.getName());
+        book.setNumberOfPages(dto.getNumberOfPages());
+        session.saveOrUpdate(book);
+    
     }
 
-    public void create(BookDto dto) {
-        Session session = DbUnit.getSessionFactory().getCurrentSession();
-        try {
-            System.out.println("Creating record Book...");
-            Book book = DtoConverter.constructBookFromDto(dto);
-            book.setDateAdd(new Date());
-            session.beginTransaction();
-            session.save(book);
-            session.getTransaction().commit();
-        } finally {
-            session.close();
-        }
+    public void create(BookDto dto,Session session) {
+        System.out.println("Creating record...");
+        Book book = DtoConverter.constructBookFromDto(dto);
+        session.save(book);
     }
 
     public Book getBookById(Long id, Session session) {
-        List<Book> books = new ArrayList<Book>();
-        Book bookResult = new Book();
+        Book bookResult ;
         Query query = session.createQuery("from Book where id=:id");
         query.setParameter("id", id);
-        List<Book> bookList = query.list();
-        for (Book book : bookList) {
-            bookResult = book;
-        }
+        bookResult=(Book) query.uniqueResult();
         return bookResult;
 
     }

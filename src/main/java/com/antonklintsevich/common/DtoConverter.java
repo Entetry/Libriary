@@ -11,6 +11,7 @@ public class DtoConverter {
         bookDto.setId(book.getId());
         bookDto.setName(book.getName());
         bookDto.setNumberOfPages(book.getNumberOfPages());
+        bookDto.setDateAdd(book.getDateAdd());
 
         return bookDto;
     }
@@ -20,7 +21,7 @@ public class DtoConverter {
        book.setName(dto.getName());
        book.setGenre(dto.getGenre());
        book.setNumberOfPages(dto.getNumberOfPages());
-
+       book.setDateAdd(dto.getDateAdd());
        if (dto.getId() != null) {
            book.setId(dto.getId());
        }

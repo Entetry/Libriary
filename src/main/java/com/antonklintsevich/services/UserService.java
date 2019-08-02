@@ -75,7 +75,7 @@ public class UserService {
 
     }
 
-    public void Delete(Long userId) {
+    public void delete(Long userId) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
@@ -90,7 +90,7 @@ public class UserService {
         }
     }
 
-    public void Update(Long userId, UserDto userDto) {
+    public void update(Long userId, UserDto userDto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
@@ -106,14 +106,14 @@ public class UserService {
         }
     }
 
-    public void Create(UserDto dto) {
+    public void create(UserDto dto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
-
+        User user = DtoConverter.constructUserFromDto(dto);
         try {
 
-            userRepository.create(dto, session);
+            userRepository.create(user, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,14 +125,14 @@ public class UserService {
     public UserDto getUserById(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
         
-        Transaction transaction = session.beginTransaction();
+       
         UserDto userDto=null;
         try {
             userDto=DtoConverter.constructUserDto(userRepository.getCurrentUser(id, session));
            
         } catch (Exception e) {
             e.printStackTrace();
-            transaction.rollback();
+          
         } finally {
             session.close();
         }
