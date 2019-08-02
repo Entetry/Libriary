@@ -11,18 +11,27 @@ public class UserDto implements Serializable {
     
     @JsonProperty
     private Long id;
+    @JsonProperty
     private String firstname;
+    @JsonProperty
     private String lastname;
+    @JsonProperty
     private Date dob;
+    @JsonProperty
     private String email;
+    @JsonProperty
     private Set<Book> books;
-    public UserDto(Long id, String firstname,String lastname,Date dob,String email) {
+    @JsonProperty
+    private String password;
+    
+    public UserDto(Long id, String firstname,String lastname,Date dob,String email,String password,Set<Book>books) {
         this.id=id;
         this.dob=dob;
         this.firstname=firstname;
         this.lastname=lastname;
         this.email=email;
         this.books=books;
+        this.password=password;
     }
     public UserDto() {}
     public String getFirstname() {
@@ -62,5 +71,17 @@ public class UserDto implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public Set<Book> getBooks() {
+        return books;
+    }
+    public void setBooks(Set<Book> books) {
+        this.books = books;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

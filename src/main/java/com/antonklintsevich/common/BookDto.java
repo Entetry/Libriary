@@ -1,16 +1,23 @@
 package com.antonklintsevich.common;
 
+import java.io.Serializable;
+
 import com.antonklintsevich.entity.Genres;
-public class BookDto {
+import com.fasterxml.jackson.annotation.JsonProperty;
+public class BookDto implements Serializable{
 	
 	public BookDto() {
 	};
 	 
-	
+	@JsonProperty
 	private Long id;
+	@JsonProperty
 	private String name;
+	@JsonProperty
 	private String author;
+	@JsonProperty
 	private Genres genre;
+	@JsonProperty
 	private int numberOfPages;
 	
 	

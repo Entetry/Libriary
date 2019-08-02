@@ -30,13 +30,14 @@ public class DtoConverter {
    public static UserDto constructUserDto(User user) {
             UserDto dto=new UserDto();
             dto.setFirstname(user.getFirstname());
-            dto.setLastname(dto.getLastname());
+            dto.setLastname(user.getLastname());
             dto.setEmail(user.getEmail());
             dto.setDob(user.getDob());
             dto.setId(user.getId());
+            dto.setPassword(user.getPassword());
             return dto;
    }
-   public static User constructUserFromDto(UserDto dto,String password) {
+   public static User constructUserFromDto(UserDto dto) {
        User user=new User();
        user.setDob(dto.getDob());
        user.setEmail(dto.getEmail());
@@ -45,7 +46,7 @@ public class DtoConverter {
        if (dto.getId() !=null) {
            user.setId(dto.getId());
        }
-       user.setPassword(password);
+       user.setPassword(dto.getPassword());
        return user;
        
    }

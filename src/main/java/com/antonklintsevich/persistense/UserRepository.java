@@ -17,26 +17,13 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.User;
 @Repository
 public class UserRepository {
-    public List<UserDto> getAllUserAsUserDTO(Session session) {
-        List<UserDto> userDtos = new ArrayList<UserDto>();
-
-        for (User user : getAllUsers(session)) {
-            userDtos.add(DtoConverter.constructUserDto(user));
-        }
-
-        return userDtos;
-    }
+    
     
     public User getCurrentUser(Long id, Session session) {
-        List<User> users = new ArrayList<User>();
-
-        User userResult = new User();
+        User userResult ;
         Query query = session.createQuery("from User where id=:id");
         query.setParameter("id", id);
-        List<User> userList = query.list();
-        for (User user : userList) {
-            userResult = user;
-        }
+        userResult = (User)query.uniqueResult();
         return userResult;
 
     }
@@ -44,15 +31,12 @@ public class UserRepository {
     public  List<User> getAllUsers(Session session) {
         List<User> users = new ArrayList<User>();
             Query query = session.createQuery("from User");
-            List<User> fd = query.list();
-            for (User b : fd) {
-                users.add(b);
-            }
+            users = query.list();
             return users;
 
     }
 
-    public Set<Book> getAllBooks(Long id, Session session) {
+    public Set<Book> getAllUserBooks(Long id, Session session) {
         Query query = session.createQuery("from User where id=:id");
         query.setParameter("id", id);
         User user = (User) query.uniqueResult();
@@ -67,22 +51,24 @@ public class UserRepository {
             q.executeUpdate();
     }
 
-    public void update(Long userId,String firstname,String lastname,Session session) {
+    public void update(Long userId,User userFromDto,Session session) {
      
             System.out.println("Updating author...");
             User user =getCurrentUser(userId, session);
-            user.setFirstname(firstname);
-            user.setLastname(lastname);
+            user.setFirstname(userFromDto.getFirstname());
+            user.setLastname(userFromDto.getLastname());
+            user.setPassword(userFromDto.getPassword());
+            user.setEmail(userFromDto.getEmail());
+            user.setDob(userFromDto.getDob());
             session.saveOrUpdate(user);
         
        
     }
 
-    public void create(UserDto dto, String password,Session session) {
+    public void create(UserDto dto,Session session) {
       
             System.out.println("Creating record...");
-            User user = DtoConverter.constructUserFromDto(dto, password);
-            user.setPassword(password);
+            User user = DtoConverter.constructUserFromDto(dto);
             session.save(user);
       
     }

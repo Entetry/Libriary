@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.common.DtoConverter;
 import com.antonklintsevich.common.UserDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.User;
@@ -30,12 +32,19 @@ public class UserService {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
     }
+    public List<UserDto> getAllUserAsUserDTO() {
+        List<UserDto> userDtos = new ArrayList<UserDto>();
 
-    public List<User> getall() {
+        for (User user : getAllUsers()) {
+            userDtos.add(DtoConverter.constructUserDto(user));
+        }
+
+        return userDtos;
+    }
+    public List<User> getAllUsers() {
         Session session = DbUnit.getSessionFactory().openSession();
 
         List<User> users = new ArrayList<>();
-        ;
         try {
             users.addAll(userRepository.getAllUsers(session));
         }
@@ -81,13 +90,14 @@ public class UserService {
         }
     }
 
-    public void Update(Long userId, String firstname, String lastname) {
+    public void Update(Long userId, UserDto userDto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
         try {
+            User user=DtoConverter.constructUserFromDto(userDto);
             session.beginTransaction();
-            userRepository.update(userId, firstname, lastname, session);
+            userRepository.update(userId, user, session);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -96,14 +106,14 @@ public class UserService {
         }
     }
 
-    public void Create(UserDto dto, String password) {
+    public void Create(UserDto dto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
 
         try {
 
-            userRepository.create(dto, password, session);
+            userRepository.create(dto, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,5 +122,41 @@ public class UserService {
             session.close();
         }
     }
+    public UserDto getUserById(Long id) {
+        Session session = DbUnit.getSessionFactory().openSession();
+        
+        Transaction transaction = session.beginTransaction();
+        UserDto userDto=null;
+        try {
+            userDto=DtoConverter.constructUserDto(userRepository.getCurrentUser(id, session));
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        } finally {
+            session.close();
+        }
+        return userDto;
+    }
+    public Set<Book> getAllUserBooks(Long id){
+        Session session = DbUnit.getSessionFactory().openSession();
 
+        Set<Book> books = new HashSet<>();
+        try {
+            books.addAll(userRepository.getAllUserBooks(id, session));
+        }
+        finally {
+            session.close();
+        }
+        return books;
+    }
+    public Set<BookDto> getAllUserBooksAsBookDto(Long userId) {
+        Set<BookDto> bookDtos = new HashSet<>();
+
+        for (Book book : getAllUserBooks(userId)) {
+            bookDtos.add(DtoConverter.constructBookDTO(book));
+        }
+
+        return bookDtos;
+    }
 }
