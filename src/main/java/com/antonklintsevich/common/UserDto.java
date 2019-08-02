@@ -8,7 +8,7 @@ import com.antonklintsevich.entity.Book;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDto implements Serializable {
-    
+
     @JsonProperty
     private Long id;
     @JsonProperty
@@ -23,17 +23,21 @@ public class UserDto implements Serializable {
     private Set<Book> books;
     @JsonProperty
     private String password;
-    
-    public UserDto(Long id, String firstname,String lastname,Date dob,String email,String password,Set<Book>books) {
-        this.id=id;
-        this.dob=dob;
-        this.firstname=firstname;
-        this.lastname=lastname;
-        this.email=email;
-        this.books=books;
-        this.password=password;
+
+    public UserDto(Long id, String firstname, String lastname, Date dob, String email, String password,
+            Set<Book> books) {
+        this.id = id;
+        this.dob = dob;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.books = books;
+        this.password = password;
     }
-    public UserDto() {}
+
+    public UserDto() {
+    }
+
     public String getFirstname() {
         return firstname;
     }
@@ -65,6 +69,7 @@ public class UserDto implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public Long getId() {
         return id;
     }
@@ -72,15 +77,19 @@ public class UserDto implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
     public Set<Book> getBooks() {
         return books;
     }
+
     public void setBooks(Set<Book> books) {
         this.books = books;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }

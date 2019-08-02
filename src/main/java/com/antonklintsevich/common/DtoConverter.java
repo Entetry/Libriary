@@ -22,10 +22,8 @@ public class DtoConverter {
        book.setGenre(dto.getGenre());
        book.setNumberOfPages(dto.getNumberOfPages());
        book.setDateAdd(dto.getDateAdd());
-       if (dto.getId() != null) {
-           book.setId(dto.getId());
-       }
-       
+       book.setId(dto.getId());
+ 
        return book;
    }
    public static UserDto constructUserDto(User user) {

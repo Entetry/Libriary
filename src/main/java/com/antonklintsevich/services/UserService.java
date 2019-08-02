@@ -32,6 +32,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
     }
+
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
@@ -41,6 +42,7 @@ public class UserService {
 
         return userDtos;
     }
+
     public List<User> getAllUsers() {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -95,8 +97,7 @@ public class UserService {
 
         Transaction transaction = session.beginTransaction();
         try {
-            User user=DtoConverter.constructUserFromDto(userDto);
-            session.beginTransaction();
+            User user = DtoConverter.constructUserFromDto(userDto);
             userRepository.update(userId, user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -122,34 +123,35 @@ public class UserService {
             session.close();
         }
     }
+
     public UserDto getUserById(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
-        
-       
-        UserDto userDto=null;
+
+        UserDto userDto = null;
         try {
-            userDto=DtoConverter.constructUserDto(userRepository.getCurrentUser(id, session));
-           
+            userDto = DtoConverter.constructUserDto(userRepository.getCurrentUser(id, session));
+
         } catch (Exception e) {
             e.printStackTrace();
-          
+
         } finally {
             session.close();
         }
         return userDto;
     }
-    public Set<Book> getAllUserBooks(Long id){
+
+    public Set<Book> getAllUserBooks(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
 
-        Set<Book> books = new HashSet<>();
+        Set<Book> books;
         try {
-            books.addAll(userRepository.getAllUserBooks(id, session));
-        }
-        finally {
+            books = userRepository.getAllUserBooks(id, session);
+        } finally {
             session.close();
         }
         return books;
     }
+
     public Set<BookDto> getAllUserBooksAsBookDto(Long userId) {
         Set<BookDto> bookDtos = new HashSet<>();
 

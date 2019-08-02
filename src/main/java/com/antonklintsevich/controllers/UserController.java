@@ -26,39 +26,44 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/users/addbook")
+    @PutMapping("/users/addbook")
     public void addBook(@RequestParam("userId") String userId, @RequestParam("bookId") String bookId) {
         userService.addBooktoUser(Long.parseLong(userId), Long.parseLong(bookId));
-        
+
     }
-    
+
     @GetMapping("/users")
+    @ResponseBody
     public List<UserDto> getAllUsers() {
-        
+
         return userService.getAllUserAsUserDTO();
     }
-  
+
     @DeleteMapping("/users/{userId}")
-    public void delete(@PathVariable("userId")Long userId) {
+    public void delete(@PathVariable("userId") Long userId) {
         userService.delete(userId);
     }
+
     @PostMapping("/users")
     public void create(@RequestBody UserDto dto) {
         userService.create(dto);
-        
+
     }
+
     @GetMapping("/users/{userId}")
     @ResponseBody
-    public UserDto getUserbyId(@PathVariable("userId")Long userId) {
+    public UserDto getUserbyId(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);
     }
+
     @PutMapping("/users/{userId}")
-    public void update(@PathVariable("userId")Long userId,@RequestBody UserDto userDto) {
+    public void update(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
         userService.update(userId, userDto);
     }
+
     @GetMapping("/users/{userId}/books")
     @ResponseBody
-    public Set<BookDto> getAllUserBooks(@PathVariable("userId")Long userId) {
+    public Set<BookDto> getAllUserBooks(@PathVariable("userId") Long userId) {
         return userService.getAllUserBooksAsBookDto(userId);
     }
 }

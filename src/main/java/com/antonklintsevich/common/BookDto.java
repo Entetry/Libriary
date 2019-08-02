@@ -5,65 +5,72 @@ import java.util.Date;
 
 import com.antonklintsevich.entity.Genres;
 import com.fasterxml.jackson.annotation.JsonProperty;
-public class BookDto implements Serializable{
-	
-	public BookDto() {
-	};
-	 
-	@JsonProperty
-	private Long id;
-	@JsonProperty
-	private String name;
-	@JsonProperty
-	private String author;
-	@JsonProperty
-	private Genres genre;
-	@JsonProperty
-	private int numberOfPages;
-	@JsonProperty
+
+public class BookDto implements Serializable {
+
+    public BookDto() {
+    };
+    public BookDto(Long id,String name,String author,Genres genre,int numberofpages,Date dateAdd) {
+       this.id=id;
+       this.name=name;
+       this.author=author;
+       this.genre=genre;
+       this.numberOfPages=numberofpages;
+       this.dateAdd=dateAdd;
+    }
+    @JsonProperty
+    private Long id;
+    @JsonProperty
+    private String name;
+    @JsonProperty
+    private String author;
+    @JsonProperty
+    private Genres genre;
+    @JsonProperty
+    private int numberOfPages;
+    @JsonProperty
     private Date dateAdd;
-	
-	
-	public Long getId() {
-	
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
 
-	public String getName() {
-		return name;
-	}
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Genres getGenre() {
-		return genre;
-	}
+    public String getAuthor() {
+        return author;
+    }
 
-	public void setGenre(Genres genre) {
-		this.genre=genre;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public int getNumberOfPages() {
-		return numberOfPages;
-	}
+    public Genres getGenre() {
+        return genre;
+    }
 
-	public void setNumberOfPages(int numberOfPages) {
-		this.numberOfPages = numberOfPages;
-	}
+    public void setGenre(Genres genre) {
+        this.genre = genre;
+    }
+
+    public int getNumberOfPages() {
+        return numberOfPages;
+    }
+
+    public void setNumberOfPages(int numberOfPages) {
+        this.numberOfPages = numberOfPages;
+    }
 
     public Date getDateAdd() {
         return dateAdd;
