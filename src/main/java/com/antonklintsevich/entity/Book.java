@@ -2,15 +2,18 @@ package com.antonklintsevich.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity(name = "Book")
@@ -28,7 +31,6 @@ public class Book implements Serializable {
         this.bookname = name;
         this.author = author;
         this.dateAdd = dateAdd;
-        this.genre = genre;
         this.numberOfPages = numberOfPages;
     };
 
@@ -36,9 +38,9 @@ public class Book implements Serializable {
     private String bookname;
     private String author;
     private Date dateAdd;
-    @Enumerated(EnumType.STRING)
-    @Column(length = 12)
-    private Genres genre;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "book_subgenre", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "subgenre_id"))
+    private Set<Subgenre> subgenres;
     private int numberOfPages;
 
     @Id
@@ -51,15 +53,6 @@ public class Book implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getName() {
-        return bookname;
-    }
-
-    public void setName(String name) {
-        this.bookname = name;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -76,15 +69,6 @@ public class Book implements Serializable {
         this.dateAdd = dateAdd;
     }
 
-    public Genres getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genres genre) {
-
-        this.genre = genre;
-    }
-
     public int getNumberOfPages() {
         return numberOfPages;
     }
@@ -92,5 +76,25 @@ public class Book implements Serializable {
     public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
+
+    public String getBookname() {
+        return bookname;
+    }
+
+    public void setBookname(String bookname) {
+        this.bookname = bookname;
+    }
+
+    public Set<Subgenre> getSubgenres() {
+        return subgenres;
+    }
+
+    public void setSubgenres(Set<Subgenre> subgenres) {
+        this.subgenres = subgenres;
+    }
+    public void addBook(Subgenre subgenre) {
+        this.subgenres.add(subgenre);
+    }
+
 
 }

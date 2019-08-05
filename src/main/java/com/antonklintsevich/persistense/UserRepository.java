@@ -34,7 +34,6 @@ public class UserRepository {
         Hibernate.initialize(user.getBooks());
         return user.getBooks();
     }
-
     public void delete(Long id, Session session) {
         System.out.println("Deleting  record...");
         String hql = "delete from User where id = :id";
