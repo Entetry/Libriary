@@ -34,7 +34,9 @@ public class User {
     private Date dob;
     private String email;
     private String password;
-
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
 
     public String getFirstname() {
@@ -100,6 +102,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
 }
