@@ -7,9 +7,9 @@ public class DtoConverter {
     public static BookDto constructBookDTO(Book book) {
         BookDto bookDto = new BookDto();
         bookDto.setAuthor(book.getAuthor());
-        bookDto.setGenre(book.getGenre());
+        bookDto.setSubgenres(book.getSubgenres());
         bookDto.setId(book.getId());
-        bookDto.setName(book.getName());
+        bookDto.setName(book.getBookname());
         bookDto.setNumberOfPages(book.getNumberOfPages());
         bookDto.setDateAdd(book.getDateAdd());
 
@@ -18,8 +18,8 @@ public class DtoConverter {
    public static Book constructBookFromDto(BookDto dto) {
        Book book=new Book();
        book.setAuthor(dto.getAuthor());
-       book.setName(dto.getName());
-       book.setGenre(dto.getGenre());
+       book.setBookname(dto.getName());
+       book.setSubgenres(dto.getSubgenres());
        book.setNumberOfPages(dto.getNumberOfPages());
        book.setDateAdd(dto.getDateAdd());
        book.setId(dto.getId());
@@ -34,6 +34,7 @@ public class DtoConverter {
             dto.setDob(user.getDob());
             dto.setId(user.getId());
             dto.setPassword(user.getPassword());
+            dto.setRoles(dto.getRoles());
             return dto;
    }
    public static User constructUserFromDto(UserDto dto) {
@@ -45,6 +46,7 @@ public class DtoConverter {
        if (dto.getId() !=null) {
            user.setId(dto.getId());
        }
+       user.setRoles(dto.getRoles());
        user.setPassword(dto.getPassword());
        return user;
        

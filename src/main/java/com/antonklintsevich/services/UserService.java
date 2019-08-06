@@ -24,14 +24,9 @@ import com.antonklintsevich.persistense.UserRepository;
 @Service
 public class UserService {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository<User> userRepository;
     @Autowired
-    private BookRepository bookRepository;
-
-    public UserService(UserRepository userRepository, BookRepository bookRepository) {
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-    }
+    private BookRepository<Book> bookRepository;
 
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
@@ -48,7 +43,7 @@ public class UserService {
 
         List<User> users = new ArrayList<>();
         try {
-            users.addAll(userRepository.getAllUsers(session));
+            users.addAll(userRepository.findAll(session));
         }
 
         finally {
@@ -64,8 +59,8 @@ public class UserService {
         ;
         try {
             System.out.println("Adding a book...");
-            User user = userRepository.getCurrentUser(userId, session);
-            user.addBook(bookRepository.getBookById(bookId, session));
+            User user = userRepository.findOne(userId, session);
+            user.addBook(bookRepository.findOne(bookId, session));
             session.saveOrUpdate(user);
             transaction.commit();
         } catch (Exception e) {
@@ -83,7 +78,7 @@ public class UserService {
         Transaction transaction = session.beginTransaction();
         ;
         try {
-            userRepository.delete(userId, session);
+            userRepository.deleteById(userId, session);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -98,7 +93,7 @@ public class UserService {
         Transaction transaction = session.beginTransaction();
         try {
             User user = DtoConverter.constructUserFromDto(userDto);
-            userRepository.update(userId, user, session);
+            userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -129,7 +124,7 @@ public class UserService {
 
         UserDto userDto = null;
         try {
-            userDto = DtoConverter.constructUserDto(userRepository.getCurrentUser(id, session));
+            userDto = DtoConverter.constructUserDto(userRepository.findOne(id, session));
 
         } catch (Exception e) {
             e.printStackTrace();

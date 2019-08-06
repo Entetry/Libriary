@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDto implements Serializable {
@@ -23,9 +24,11 @@ public class UserDto implements Serializable {
     private Set<Book> books;
     @JsonProperty
     private String password;
+    @JsonProperty
+    private Set<Role> roles;
 
     public UserDto(Long id, String firstname, String lastname, Date dob, String email, String password,
-            Set<Book> books) {
+            Set<Book> books,Set<Role>roles) {
         this.id = id;
         this.dob = dob;
         this.firstname = firstname;
@@ -33,6 +36,7 @@ public class UserDto implements Serializable {
         this.email = email;
         this.books = books;
         this.password = password;
+        this.roles=roles;
     }
 
     public UserDto() {
@@ -92,5 +96,13 @@ public class UserDto implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

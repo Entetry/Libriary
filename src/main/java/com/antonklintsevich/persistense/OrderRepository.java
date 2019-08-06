@@ -7,15 +7,14 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import com.antonklintsevich.entity.Book;
-import com.antonklintsevich.entity.Subgenre;
-
+import com.antonklintsevich.entity.Order;
 @Repository
-public class BookRepository<T>
+public class OrderRepository<T>
 extends AbstractHibernateDao<T> implements IGenericDao<T> {
-    public Set<Subgenre> getAllBookSubgenres(Long id,Session session){
-        Book book= (Book) findOne(id, session);
-        Hibernate.initialize(book.getSubgenres());
-        return book.getSubgenres();
+
+    public Set<Book> getAllOrderBooks(Long id,Session session){
+       Order order= (Order) findOne(id, session);
+       Hibernate.initialize(order.getBooks());
+       return order.getBooks();
     }
-    
 }

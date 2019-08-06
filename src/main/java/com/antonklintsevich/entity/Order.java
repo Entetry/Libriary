@@ -1,21 +1,66 @@
 package com.antonklintsevich.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-@Entity(name = "Genre")
-@Table(name = "genre")
+@Entity(name = "Order")
+@Table(name = "order")
 public class Order {
     @Id
     @Column(name="order_id")
     @GeneratedValue
 private Long id;
-private Long userid;
+@ManyToOne
+@JoinColumn(name="user_id")
+private User user;
 private Date orderdate;
-private Long bookid;
-private int price;
+@ManyToMany(cascade = CascadeType.ALL)
+@JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
+private Set<Book> books;
+private BigDecimal price;
+public Long getId() {
+    return id;
+}
+public void setId(Long id) {
+    this.id = id;
+}
+public User getUser() {
+    return user;
+}
+public void setUser(User user) {
+    this.user = user;
+}
+public Date getOrderdate() {
+    return orderdate;
+}
+public void setOrderdate(Date orderdate) {
+    this.orderdate = orderdate;
+}
+public Set<Book> getBooks() {
+    return books;
+}
+public void setBooks(Set<Book> books) {
+    this.books = books;
+}
+public BigDecimal getPrice() {
+    return price;
+}
+public void setPrice(BigDecimal price) {
+    this.price = price;
+}
+public void addBook(Book book) {
+    this.books.add(book);
+}
+
 }

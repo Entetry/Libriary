@@ -8,17 +8,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.antonklintsevich.common.BookDto;
-import com.antonklintsevich.entity.Genres;
 import com.antonklintsevich.services.BookService;
 
 @RestController
 public class BookController {
     @Autowired
     private BookService bookService;
+    @PutMapping("/books/addsubgenre")
+    public void addSubgenre(@RequestParam("bookId") String bookId, @RequestParam("subgenreId") String subgenreId) {
+        bookService.addSubgenretoBook(Long.parseLong(bookId), Long.parseLong(subgenreId));
+
+    }
 
     @GetMapping("/books")
     @ResponseBody

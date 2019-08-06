@@ -25,5 +25,9 @@
         <!-- Annotated entity classes -->
    <mapping class="com.antonklintsevich.entity.Book"/>
        <mapping class="com.antonklintsevich.entity.User"/>
+       <mapping class="com.antonklintsevich.entity.Subgenre"/>
+       <mapping class="com.antonklintsevich.entity.Genre"/>
+       <mapping class="com.antonklintsevich.entity.Role"/>
+       <mapping class="com.antonklintsevich.entity.Order"/>
     </session-factory>
 </hibernate-configuration>

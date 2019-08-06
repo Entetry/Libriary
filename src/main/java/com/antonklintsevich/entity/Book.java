@@ -27,19 +27,19 @@ public class Book implements Serializable {
     public Book() {
     };
 
-    public Book(String name, String author, Date dateAdd, Genres genre, int numberOfPages) {
+    public Book(String name, String author, Date dateAdd, Set<Subgenre> subgenres, int numberOfPages) {
         this.bookname = name;
         this.author = author;
         this.dateAdd = dateAdd;
         this.numberOfPages = numberOfPages;
+        this.subgenres=subgenres;
     };
 
     private Long id;
     private String bookname;
     private String author;
     private Date dateAdd;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "book_subgenre", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "subgenre_id"))
+    
     private Set<Subgenre> subgenres;
     private int numberOfPages;
 
@@ -76,7 +76,7 @@ public class Book implements Serializable {
     public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
     }
-
+    @Column(name="bookname")
     public String getBookname() {
         return bookname;
     }
@@ -84,7 +84,8 @@ public class Book implements Serializable {
     public void setBookname(String bookname) {
         this.bookname = bookname;
     }
-
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "book_subgenre", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "subgenre_id"))
     public Set<Subgenre> getSubgenres() {
         return subgenres;
     }
@@ -92,7 +93,7 @@ public class Book implements Serializable {
     public void setSubgenres(Set<Subgenre> subgenres) {
         this.subgenres = subgenres;
     }
-    public void addBook(Subgenre subgenre) {
+    public void addSubgenre(Subgenre subgenre) {
         this.subgenres.add(subgenre);
     }
 

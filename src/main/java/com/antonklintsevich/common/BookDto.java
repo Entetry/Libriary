@@ -2,30 +2,30 @@ package com.antonklintsevich.common;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
-import com.antonklintsevich.entity.Genres;
+import com.antonklintsevich.entity.Subgenre;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BookDto implements Serializable {
 
     public BookDto() {
     };
-    public BookDto(Long id,String name,String author,Genres genre,int numberofpages,Date dateAdd) {
+    public BookDto(Long id,String bookname,String author,Set<Subgenre> subgenres,int numberofpages,Date dateAdd) {
        this.id=id;
-       this.name=name;
+       this.bookname=bookname;
        this.author=author;
-       this.genre=genre;
+       this.subgenres=subgenres;
        this.numberOfPages=numberofpages;
        this.dateAdd=dateAdd;
     }
     @JsonProperty
     private Long id;
     @JsonProperty
-    private String name;
+    private String bookname;
     @JsonProperty
     private String author;
-    @JsonProperty
-    private Genres genre;
+    private Set<Subgenre> subgenres;
     @JsonProperty
     private int numberOfPages;
     @JsonProperty
@@ -41,11 +41,11 @@ public class BookDto implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return bookname;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.bookname = name;
     }
 
     public String getAuthor() {
@@ -55,15 +55,6 @@ public class BookDto implements Serializable {
     public void setAuthor(String author) {
         this.author = author;
     }
-
-    public Genres getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genres genre) {
-        this.genre = genre;
-    }
-
     public int getNumberOfPages() {
         return numberOfPages;
     }
@@ -79,5 +70,12 @@ public class BookDto implements Serializable {
     public void setDateAdd(Date dateAdd) {
         this.dateAdd = dateAdd;
     }
-
+    public Set<Subgenre> getSubgenres() {
+        return subgenres;
+    }
+    public void setSubgenres(Set<Subgenre> subgenres) {
+        this.subgenres = subgenres;
+    }
+    
+   
 }
