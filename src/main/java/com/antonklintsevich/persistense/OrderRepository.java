@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 @Repository
-public class OrderRepository<T>
-extends AbstractHibernateDao<T> implements IGenericDao<T> {
+public class OrderRepository
+extends AbstractHibernateDao<Order>{
 
     public Set<Book> getAllOrderBooks(Long id,Session session){
-       Order order= (Order) findOne(id, session);
+       Order order=  findOne(id, session);
        Hibernate.initialize(order.getBooks());
        return order.getBooks();
     }

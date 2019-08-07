@@ -2,8 +2,10 @@ package com.antonklintsevich.persistense;
 
 import org.springframework.stereotype.Repository;
 
+import com.antonklintsevich.entity.Genre;
+
 @Repository
-public class GenreRepository <T>
-extends AbstractHibernateDao<T> implements IGenericDao<T>{
+public class GenreRepository 
+extends AbstractHibernateDao<Genre>{
 
 }

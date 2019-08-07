@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 
-public interface IGenericDao<T> {
+public interface IGenericDao<T extends Object> {
     
     T findOne(final Long id,Session session);
   

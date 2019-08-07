@@ -1,6 +1,7 @@
 package com.antonklintsevich.common;
 
 import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.User;
 
 public class DtoConverter {
@@ -34,7 +35,7 @@ public class DtoConverter {
             dto.setDob(user.getDob());
             dto.setId(user.getId());
             dto.setPassword(user.getPassword());
-            dto.setRoles(dto.getRoles());
+            dto.setUsername(user.getUsername());
             return dto;
    }
    public static User constructUserFromDto(UserDto dto) {
@@ -46,9 +47,31 @@ public class DtoConverter {
        if (dto.getId() !=null) {
            user.setId(dto.getId());
        }
-       user.setRoles(dto.getRoles());
        user.setPassword(dto.getPassword());
+       user.setUsername(dto.getUsername());
        return user;
        
    }
+   public static OrderDto constructOrderDTO(Order order) {
+       OrderDto orderDto = new OrderDto();
+       orderDto.setBooks(order.getBooks());
+       orderDto.setOrderdate(order.getOrderdate());
+       orderDto.setPrice(order.getPrice());
+       orderDto.setUser(order.getUser());
+       orderDto.setId(order.getId());
+
+       return orderDto;
+   }
+  public static Order constructOrderFromDto(OrderDto orderDto) {
+      Order order=new Order();
+      order.setUser(orderDto.getUser());
+      order.setPrice(orderDto.getPrice());
+      order.setUser(orderDto.getUser());
+      if(orderDto.getId()!=null) {
+          order.setId(orderDto.getId());
+      }
+      order.setBooks(orderDto.getBooks());
+
+      return order;
+  }
 }

@@ -20,9 +20,9 @@ import com.antonklintsevich.persistense.SubgenreRepository;
 @Service
 public class BookService {
     @Autowired
-    private BookRepository<Book> bookRepository;
+    private BookRepository bookRepository;
     @Autowired
-    private SubgenreRepository<Subgenre> subgenreRepository;
+    private SubgenreRepository subgenreRepository;
   
     public void delete(Long bookId) {
         Session session = DbUnit.getSessionFactory().openSession();
@@ -44,8 +44,10 @@ public class BookService {
 
         Transaction transaction = session.beginTransaction();
         try {
-            Book book = DtoConverter.constructBookFromDto(bookDto);
-
+            Book book = bookRepository.findOne(bookId, session);
+            book.setAuthor(bookDto.getAuthor());
+            book.setBookname(bookDto.getName());
+            book.setDateAdd(bookDto.getDateAdd());
             bookRepository.update(book, session);
             transaction.commit();
         } catch (Exception e) {
@@ -127,7 +129,6 @@ public class BookService {
         } finally {
             session.close();
         }
-
     }
 
 }

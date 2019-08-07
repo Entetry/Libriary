@@ -19,15 +19,17 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
+import com.antonklintsevich.persistense.RoleRepository;
 import com.antonklintsevich.persistense.UserRepository;
 
 @Service
 public class UserService {
     @Autowired
-    private UserRepository<User> userRepository;
+    private UserRepository userRepository;
     @Autowired
-    private BookRepository<Book> bookRepository;
-
+    private BookRepository bookRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
@@ -52,7 +54,7 @@ public class UserService {
         return users;
     }
 
-    public void addBooktoUser(Long userId, Long bookId) {
+    public void addBookToUser(Long userId, Long bookId) {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -71,7 +73,25 @@ public class UserService {
         }
 
     }
+    public void addRoleToUser(Long userId, Long roleId) {
 
+        Session session = DbUnit.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        ;
+        try {
+            System.out.println("Adding a role...");
+            User user = userRepository.findOne(userId, session);
+            user.addRole(roleRepository.findOne(roleId, session));
+            session.saveOrUpdate(user);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        } finally {
+            session.close();
+        }
+
+    }
     public void delete(Long userId) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -92,7 +112,13 @@ public class UserService {
 
         Transaction transaction = session.beginTransaction();
         try {
-            User user = DtoConverter.constructUserFromDto(userDto);
+            User user = userRepository.findOne(userId, session);
+            user.setUsername(userDto.getUsername());
+            user.setPassword(userDto.getPassword());
+            user.setFirstname(userDto.getFirstname());
+            user.setLastname(userDto.getLastname());
+            user.setDob(userDto.getDob());
+            user.setEmail(userDto.getEmail());
             userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -156,5 +182,7 @@ public class UserService {
 
         return bookDtos;
     }
+    
+    
     
 }

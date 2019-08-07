@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 @Entity(name = "User")
 @Table(name = "\"user\"")
-public class User {
+public class User extends AbstractEntity {
     public User() {
     }
 
@@ -28,12 +28,13 @@ public class User {
         this.password = password;
     }
 
-    private Long id;
+    
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
+    private String username;
     
 private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
@@ -95,12 +96,15 @@ private Set<Role> roles;
     @Id
     @GeneratedValue
     @Column(name = "user_id", insertable = false, updatable = false)
+    @Override
     public Long getId() {
-        return id;
+        return super.getId();
     }
+    @Override
     public void setId(Long id) {
-        this.id = id;
+        super.setId(id);
     }
+  
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> getRoles() {
@@ -109,6 +113,16 @@ private Set<Role> roles;
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

@@ -28,7 +28,12 @@ public class UserController {
 
     @PutMapping("/users/addbook")
     public void addBook(@RequestParam("userId") String userId, @RequestParam("bookId") String bookId) {
-        userService.addBooktoUser(Long.parseLong(userId), Long.parseLong(bookId));
+        userService.addBookToUser(Long.parseLong(userId), Long.parseLong(bookId));
+
+    }
+    @PutMapping("/users/addrole")
+    public void addRole(@RequestParam("userId") String userId, @RequestParam("roleId") String roleId) {
+        userService.addRoleToUser(Long.parseLong(userId), Long.parseLong(roleId));
 
     }
 
@@ -60,7 +65,11 @@ public class UserController {
     public void update(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
         userService.update(userId, userDto);
     }
-
+    @GetMapping("/users/{userId}/roles")
+    @ResponseBody
+    public Set<BookDto> getAllUserRoles(@PathVariable("userId") Long userId) {
+        return userService.getAllUserBooksAsBookDto(userId);
+    }
     @GetMapping("/users/{userId}/books")
     @ResponseBody
     public Set<BookDto> getAllUserBooks(@PathVariable("userId") Long userId) {
