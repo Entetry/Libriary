@@ -2,6 +2,7 @@ package com.antonklintsevich.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Order")
-@Table(name = "order")
+@Table(name = "\"order\"")
 public class Order extends AbstractEntity {
     @Id
     @Column(name = "order_id")
@@ -25,10 +26,12 @@ public class Order extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @Column(name="order_date")
     private Date orderdate;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private Set<Book> books;
+    private Set<Book> books=new HashSet<>();
+    @Column(name="price")
     private BigDecimal price;
 
     public Long getId() {

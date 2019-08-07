@@ -38,9 +38,9 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public void create(@RequestBody OrderDto orderDto) {
+    public void create(@RequestParam("userId") Long userId,@RequestParam("bookId")Long ...bookId) {
      
-        orderService.create(orderDto);
+        orderService.create(userId,bookId);
 
     }
 

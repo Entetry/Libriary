@@ -31,7 +31,7 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> implements 
 
     @Override
     public T create(T entity, Session session) {
-        session.save(entity);
+        session.saveOrUpdate(entity);
         return entity;
     }
 

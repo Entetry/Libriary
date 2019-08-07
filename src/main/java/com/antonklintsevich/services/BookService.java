@@ -122,7 +122,7 @@ public class BookService {
             System.out.println("Adding a book...");
             Book book = bookRepository.findOne(bookId, session);
             book.addSubgenre(subgenreRepository.findOne(subgenreId, session));
-            session.saveOrUpdate(book);
+            bookRepository.update(book, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();

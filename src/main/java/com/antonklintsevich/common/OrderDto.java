@@ -3,6 +3,7 @@ package com.antonklintsevich.common;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.antonklintsevich.entity.Book;
@@ -21,7 +22,7 @@ public class OrderDto implements Serializable {
     @JsonProperty
     private Date orderdate;
     @JsonProperty
-    private Set<BookDto> bookDtos;
+    private Set<BookDto> bookDtos=new HashSet<>();
     @JsonProperty
     private BigDecimal price;
 

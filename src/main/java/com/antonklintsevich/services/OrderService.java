@@ -1,6 +1,8 @@
 package com.antonklintsevich.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -62,13 +64,24 @@ public class OrderService {
         }
     }
 
-    public void create(OrderDto orderDto) {
+    public void create(Long userId,Long ...bookId ) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
-        Order order = DtoConverter.constructOrderFromDto(orderDto);
+        
+        
         try {
-
+            Order order =new Order();
+            var totalPrice = new BigDecimal(0);
+            for(int i=0;i<bookId.length;i++) {
+                Book book=bookRepository.findOne(bookId[i], session);
+            order.addBook(book);
+            totalPrice = totalPrice.add(book.getPrice());
+            }
+            order.setUser(userRepository.findOne(userId, session));
+            var date = new Date();
+            order.setOrderdate(date);
+            order.setPrice(totalPrice);
             orderRepository.create(order, session);
             transaction.commit();
         } catch (Exception e) {

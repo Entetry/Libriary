@@ -65,7 +65,7 @@ public class UserService {
             System.out.println("Adding a book...");
             User user = userRepository.findOne(userId, session);
             user.addBook(bookRepository.findOne(bookId, session));
-            session.saveOrUpdate(user);
+            userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class UserService {
             System.out.println("Adding a role...");
             User user = userRepository.findOne(userId, session);
             user.addRole(roleRepository.findOne(roleId, session));
-            session.saveOrUpdate(user);
+            userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
