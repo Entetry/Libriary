@@ -17,6 +17,7 @@ import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.OrderRepository;
 import com.antonklintsevich.persistense.UserRepository;
+
 @Service
 public class OrderService {
     @Autowired
@@ -25,7 +26,7 @@ public class OrderService {
     private UserRepository userRepository;
     @Autowired
     private OrderRepository orderRepository;
-    
+
     public void delete(Long orderId) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -48,7 +49,7 @@ public class OrderService {
         try {
             Order order = orderRepository.findOne(orderId, session);
             order.setPrice(orderDto.getPrice());
-            order.setBooks(orderDto.getBooks());
+            order.setBooks(DtoConverter.constructBookSet(orderDto.getBookDtos()));
             order.setPrice(orderDto.getPrice());
             order.setOrderdate(orderDto.getOrderdate());
             orderRepository.update(order, session);
@@ -106,7 +107,7 @@ public class OrderService {
         OrderDto orderDto = null;
         try {
             orderDto = DtoConverter.constructOrderDTO(orderRepository.findOne(id, session));
-            orderDto.setBooks(getAllOrderBooks(id));
+            orderDto.setBookDtos(DtoConverter.constructBookDtoSet(getAllOrderBooks(id)));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,6 +117,7 @@ public class OrderService {
         }
         return orderDto;
     }
+
     public Set<Book> getAllOrderBooks(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -127,6 +129,7 @@ public class OrderService {
         }
         return books;
     }
+
     public void addBookToOrder(Long orderId, Long bookId) {
 
         Session session = DbUnit.getSessionFactory().openSession();

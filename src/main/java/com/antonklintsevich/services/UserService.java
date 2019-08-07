@@ -16,6 +16,7 @@ import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
 import com.antonklintsevich.common.UserDto;
 import com.antonklintsevich.entity.Book;
+import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
@@ -30,6 +31,7 @@ public class UserService {
     private BookRepository bookRepository;
     @Autowired
     private RoleRepository roleRepository;
+
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
@@ -73,6 +75,7 @@ public class UserService {
         }
 
     }
+
     public void addRoleToUser(Long userId, Long roleId) {
 
         Session session = DbUnit.getSessionFactory().openSession();
@@ -92,6 +95,7 @@ public class UserService {
         }
 
     }
+
     public void delete(Long userId) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -151,7 +155,8 @@ public class UserService {
         UserDto userDto = null;
         try {
             userDto = DtoConverter.constructUserDto(userRepository.findOne(id, session));
-
+            userDto.setRoles(DtoConverter.constructRoleDtoSet(getAllUserRoles(id)));
+            userDto.setBooks(DtoConverter.constructBookDtoSet(getAllUserBooks(id)));
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -182,7 +187,17 @@ public class UserService {
 
         return bookDtos;
     }
-    
-    
-    
+
+    public Set<Role> getAllUserRoles(Long id) {
+        Session session = DbUnit.getSessionFactory().openSession();
+
+        Set<Role> roles;
+        try {
+            roles = userRepository.getAllUserRoles(id, session);
+        } finally {
+            session.close();
+        }
+        return roles;
+    }
+
 }

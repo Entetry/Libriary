@@ -44,13 +44,13 @@ public class OrderController {
 
     }
 
-    @GetMapping("/books/{orderId}")
+    @GetMapping("/orders/{orderId}")
     @ResponseBody
     public OrderDto getBookbyId(@PathVariable("orderId") Long orderId) {
         return orderService.getOrderById(orderId);
     }
 
-    @PutMapping("/books/{orderId}")
+    @PutMapping("/orders/{orderId}")
     public void update(@PathVariable("orderId") Long orderId, @RequestBody OrderDto orderDto) {
         orderService.update(orderId, orderDto);
     }

@@ -28,15 +28,15 @@ public class User extends AbstractEntity {
         this.password = password;
     }
 
-    
+    private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
     private String username;
-    
-private Set<Role> roles;
+
+    private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
 
     public String getFirstname() {
@@ -98,13 +98,13 @@ private Set<Role> roles;
     @Column(name = "user_id", insertable = false, updatable = false)
     @Override
     public Long getId() {
-        return super.getId();
+        return this.id;
     }
-    @Override
+
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
-  
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> getRoles() {
@@ -114,9 +114,11 @@ private Set<Role> roles;
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
     public void addRole(Role role) {
         this.roles.add(role);
     }
+
     public String getUsername() {
         return username;
     }

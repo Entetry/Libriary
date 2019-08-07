@@ -8,6 +8,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 public class DbUnit {
 
     private static SessionFactory sessionFactory;
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             Configuration configuration = new Configuration().configure("hibernate.cfg.xml");

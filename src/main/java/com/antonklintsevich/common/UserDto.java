@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import com.antonklintsevich.entity.Book;
-import com.antonklintsevich.entity.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDto implements Serializable {
@@ -20,25 +18,26 @@ public class UserDto implements Serializable {
     private Date dob;
     @JsonProperty
     private String email;
-   
- //   private Set<Book> books;
+    @JsonProperty
+    private Set<BookDto> books;
     @JsonProperty
     private String password;
-
-   // private Set<Role> roles;
+    @JsonProperty
+    private Set<RoleDto> roles;
     @JsonProperty
     private String username;
-
-    public UserDto(Long id,String username, String firstname, String lastname, Date dob, String email, String password) {
+   
+    public UserDto(Long id, String username, String firstname, String lastname, Date dob, String email,
+            String password) {
         this.id = id;
         this.dob = dob;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-     //   this.books = books;
+        // this.books = books;
         this.password = password;
-       // this.roles=roles;
-        this.username=username;
+        // this.roles=roles;
+        this.username = username;
     }
 
     public UserDto() {
@@ -84,14 +83,6 @@ public class UserDto implements Serializable {
         this.id = id;
     }
 
-//    public Set<Book> getBooks() {
-//        return books;
-//    }
-//
-//    public void setBooks(Set<Book> books) {
-//        this.books = books;
-//    }
-
     public String getPassword() {
         return password;
     }
@@ -100,19 +91,27 @@ public class UserDto implements Serializable {
         this.password = password;
     }
 
-//    public Set<Role> getRoles() {
-//        return roles;
-//    }
-//
-//    public void setRoles(Set<Role> roles) {
-//        this.roles = roles;
-//    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Set<BookDto> getBooks() {
+        return books;
+    }
+
+    public void setBooks(Set<BookDto> books) {
+        this.books = books;
+    }
+
+    public Set<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDto> roles) {
+        this.roles = roles;
     }
 }

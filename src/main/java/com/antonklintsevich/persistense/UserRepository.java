@@ -11,16 +11,16 @@ import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 
 @Repository
-public class UserRepository
-extends AbstractHibernateDao<User> {
+public class UserRepository extends AbstractHibernateDao<User> {
 
-    public Set<Book> getAllUserBooks(Long id,Session session){
-       User user= findOne(id, session);
-       Hibernate.initialize(user.getBooks());
-       return user.getBooks();
+    public Set<Book> getAllUserBooks(Long id, Session session) {
+        User user = findOne(id, session);
+        Hibernate.initialize(user.getBooks());
+        return user.getBooks();
     }
-    public Set<Role> getAllUserRoles(Long id,Session session){
-        User user=  findOne(id, session);
+
+    public Set<Role> getAllUserRoles(Long id, Session session) {
+        User user = findOne(id, session);
         Hibernate.initialize(user.getRoles());
         return user.getRoles();
     }

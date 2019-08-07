@@ -1,8 +1,10 @@
 package com.antonklintsevich;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.User;
@@ -31,5 +33,13 @@ public class Main {
 //        order.setUser(user);
 //        order.setBooks(user.getBooks());
 //        System.out.println(mapper.writeValueAsString(order));
+//        BookDto dto=new BookDto();
+//        dto.setAuthor("author");
+//        dto.setBookname("name");
+//        dto.setDateAdd(new Date());
+//        dto.setBookname("bookname");
+//        dto.setPrice(new BigDecimal("0.05"));
+//        ObjectMapper mapper = new ObjectMapper();
+//        System.out.println(mapper.writeValueAsString(dto));
 //    }
 }

@@ -23,7 +23,7 @@ public class BookService {
     private BookRepository bookRepository;
     @Autowired
     private SubgenreRepository subgenreRepository;
-  
+
     public void delete(Long bookId) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -46,7 +46,7 @@ public class BookService {
         try {
             Book book = bookRepository.findOne(bookId, session);
             book.setAuthor(bookDto.getAuthor());
-            book.setBookname(bookDto.getName());
+            book.setBookname(bookDto.getBookname());
             book.setDateAdd(bookDto.getDateAdd());
             bookRepository.update(book, session);
             transaction.commit();
@@ -112,6 +112,7 @@ public class BookService {
         }
         return bookDto;
     }
+
     public void addSubgenretoBook(Long bookId, Long subgenreId) {
 
         Session session = DbUnit.getSessionFactory().openSession();

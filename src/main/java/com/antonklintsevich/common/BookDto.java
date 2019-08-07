@@ -1,35 +1,41 @@
 package com.antonklintsevich.common;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
-import com.antonklintsevich.entity.Subgenre;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BookDto implements Serializable {
 
     public BookDto() {
     };
-    public BookDto(Long id,String bookname,String author,Set<Subgenre> subgenres,int numberofpages,Date dateAdd) {
-       this.id=id;
-       this.bookname=bookname;
-       this.author=author;
-       this.subgenres=subgenres;
-       this.numberOfPages=numberofpages;
-       this.dateAdd=dateAdd;
+
+    public BookDto(Long id, String bookname, String author, Set<SubgenreDto> subgenres, int numberofpages,
+            Date dateAdd) {
+        this.id = id;
+        this.bookname = bookname;
+        this.author = author;
+        this.subgenres = subgenres;
+        this.numberOfPages = numberofpages;
+        this.dateAdd = dateAdd;
     }
+
     @JsonProperty
     private Long id;
     @JsonProperty
     private String bookname;
     @JsonProperty
     private String author;
-    private Set<Subgenre> subgenres;
+    @JsonProperty
+    private Set<SubgenreDto> subgenres;
     @JsonProperty
     private int numberOfPages;
     @JsonProperty
     private Date dateAdd;
+    @JsonProperty
+    private BigDecimal price;
 
     public Long getId() {
 
@@ -40,14 +46,6 @@ public class BookDto implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return bookname;
-    }
-
-    public void setName(String name) {
-        this.bookname = name;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -55,6 +53,7 @@ public class BookDto implements Serializable {
     public void setAuthor(String author) {
         this.author = author;
     }
+
     public int getNumberOfPages() {
         return numberOfPages;
     }
@@ -70,12 +69,29 @@ public class BookDto implements Serializable {
     public void setDateAdd(Date dateAdd) {
         this.dateAdd = dateAdd;
     }
-    public Set<Subgenre> getSubgenres() {
+
+    public String getBookname() {
+        return bookname;
+    }
+
+    public void setBookname(String bookname) {
+        this.bookname = bookname;
+    }
+
+    public Set<SubgenreDto> getSubgenres() {
         return subgenres;
     }
-    public void setSubgenres(Set<Subgenre> subgenres) {
+
+    public void setSubgenres(Set<SubgenreDto> subgenres) {
         this.subgenres = subgenres;
     }
-    
-   
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
 }

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity(name = "Subgenre")
 @Table(name = "subgenre")
-public class Subgenre {
+public class Subgenre extends AbstractEntity {
     @Id
     @Column(name = "subgenre_id")
     @GeneratedValue
