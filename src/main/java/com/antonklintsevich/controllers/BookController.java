@@ -2,6 +2,7 @@ package com.antonklintsevich.controllers;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.exception.MyResourceNotFoundException;
 import com.antonklintsevich.services.BookService;
 
 @RestController
@@ -21,16 +24,20 @@ public class BookController {
     private BookService bookService;
     @PutMapping("/books/addsubgenre")
     public void addSubgenre(@RequestParam("bookId") String bookId, @RequestParam("subgenreId") String subgenreId) {
+        try {
         bookService.addSubgenretoBook(Long.parseLong(bookId), Long.parseLong(subgenreId));
-
+        }
+        catch(MyResourceNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(),exc);
+        }
     }
 
     @GetMapping("/books")
     @ResponseBody
-    public List<BookDto> getAllBooks() {
-
-        return bookService.getAllBooksAsBookDTO();
-    }
+    public List<BookDto> getAllBooks() { 
+        return bookService.getAllBooksAsBookDTO();}
+        
+    
 
     @DeleteMapping("/books/{bookId}")
     public void delete(@PathVariable("bookId") Long bookId) {
@@ -47,7 +54,11 @@ public class BookController {
     @GetMapping("/books/{bookId}")
     @ResponseBody
     public BookDto getBookbyId(@PathVariable("bookId") Long bookId) {
-        return bookService.getBookById(bookId);
+        try {
+        return bookService.getBookById(bookId);}
+        catch(MyResourceNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found",exc);
+        }
     }
 
     @PutMapping("/books/{bookId}")
