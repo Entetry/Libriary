@@ -15,38 +15,43 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.MyResourceNotFoundException;
+import com.antonklintsevich.exception.SubgenreNotFoundException;
 import com.antonklintsevich.services.BookService;
 
 @RestController
 public class BookController {
     @Autowired
     private BookService bookService;
+
     @PutMapping("/books/addsubgenre")
     public void addSubgenre(@RequestParam("bookId") String bookId, @RequestParam("subgenreId") String subgenreId) {
         try {
-        bookService.addSubgenretoBook(Long.parseLong(bookId), Long.parseLong(subgenreId));
-        }
-        catch(MyResourceNotFoundException exc) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(),exc);
+            bookService.addSubgenretoBook(Long.parseLong(bookId), Long.parseLong(subgenreId));
+        } catch (BookNotFoundException | SubgenreNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
         }
     }
 
     @GetMapping("/books")
     @ResponseBody
-    public List<BookDto> getAllBooks() { 
-        return bookService.getAllBooksAsBookDTO();}
-        
-    
+    public List<BookDto> getAllBooks() {
+        return bookService.getAllBooksAsBookDTO();
+    }
 
     @DeleteMapping("/books/{bookId}")
     public void delete(@PathVariable("bookId") Long bookId) {
-        bookService.delete(bookId);
+        try {
+            bookService.delete(bookId);
+        } catch (BookNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
+        }
     }
 
     @PostMapping("/books")
     public void create(@RequestBody BookDto bookDto) {
-     
+
         bookService.create(bookDto);
 
     }
@@ -55,15 +60,19 @@ public class BookController {
     @ResponseBody
     public BookDto getBookbyId(@PathVariable("bookId") Long bookId) {
         try {
-        return bookService.getBookById(bookId);}
-        catch(MyResourceNotFoundException exc) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found",exc);
+            return bookService.getBookById(bookId);
+        } catch (BookNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
         }
     }
 
     @PutMapping("/books/{bookId}")
     public void update(@PathVariable("bookId") Long bookId, @RequestBody BookDto bookDto) {
-        bookService.update(bookId, bookDto);
+        try {
+            bookService.update(bookId, bookDto);
+        } catch (BookNotFoundException exc) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
+        }
     }
 
 }

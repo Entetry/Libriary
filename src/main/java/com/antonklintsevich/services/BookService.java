@@ -13,7 +13,9 @@ import com.antonklintsevich.common.DtoConverter;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.MyResourceNotFoundException;
+import com.antonklintsevich.exception.SubgenreNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.SubgenreRepository;
@@ -29,12 +31,14 @@ public class BookService {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
-        ;
+        bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new);
         try {
             bookRepository.deleteById(bookId, session);
             transaction.commit();
         } catch (Exception e) {
+
             transaction.rollback();
+            ;
         } finally {
             session.close();
         }
@@ -44,11 +48,12 @@ public class BookService {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
+
+        Book book = bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new);
+        book.setAuthor(bookDto.getAuthor());
+        book.setBookname(bookDto.getBookname());
+        book.setDateAdd(bookDto.getDateAdd());
         try {
-            Book book = bookRepository.findOne(bookId, session);
-            book.setAuthor(bookDto.getAuthor());
-            book.setBookname(bookDto.getBookname());
-            book.setDateAdd(bookDto.getDateAdd());
             bookRepository.update(book, session);
             transaction.commit();
         } catch (Exception e) {
@@ -65,7 +70,6 @@ public class BookService {
         Transaction transaction = session.beginTransaction();
         Book book = DtoConverter.constructBookFromDto(bookDto);
         try {
-
             bookRepository.create(book, session);
             transaction.commit();
         } catch (Exception e) {
@@ -78,11 +82,9 @@ public class BookService {
 
     public List<BookDto> getAllBooksAsBookDTO() {
         List<BookDto> bookDtos = new ArrayList<BookDto>();
-
         for (Book book : getAllBooks()) {
             bookDtos.add(DtoConverter.constructBookDTO(book));
         }
-
         return bookDtos;
     }
 
@@ -100,19 +102,11 @@ public class BookService {
 
     public BookDto getBookById(Long id) throws MyResourceNotFoundException {
         Session session = DbUnit.getSessionFactory().openSession();
-
         BookDto bookDto = null;
-        try {
-            bookDto = DtoConverter.constructBookDTO(bookRepository.findOne(id, session));}
-        catch(NullPointerException exc) {
-            exc.printStackTrace();
-            if(bookDto==null) {
-                throw new MyResourceNotFoundException();} 
-        }
+        bookDto = DtoConverter
+                .constructBookDTO(bookRepository.findOne(id, session).orElseThrow(BookNotFoundException::new));
+        session.close();
 
-        finally {
-            session.close();
-        }
         return bookDto;
     }
 
@@ -120,23 +114,15 @@ public class BookService {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        Book book=null;
-        Subgenre subgenre=null;
+        System.out.println("Adding a book...");
+        Book book = bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new);
+        Subgenre subgenre = subgenreRepository.findOne(subgenreId, session).orElseThrow(SubgenreNotFoundException::new);
+        book.addSubgenre(subgenre);
         try {
-            System.out.println("Adding a book...");
-            book = bookRepository.findOne(bookId, session);
-            subgenre=subgenreRepository.findOne(subgenreId, session);
-            book.addSubgenre(subgenre);
             bookRepository.update(book, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            if(book==null) {
-                throw new MyResourceNotFoundException("book not found");
-            }
-            if(subgenre==null) {
-                throw new MyResourceNotFoundException("Subgenre doesnt exist");
-            }
             transaction.rollback();
         } finally {
             session.close();

@@ -10,11 +10,13 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.antonklintsevich.common.DtoConverter;
 import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
+import com.antonklintsevich.exception.BookNotFoundException;
+import com.antonklintsevich.exception.OrderNotFoundException;
+import com.antonklintsevich.exception.RoleNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.OrderRepository;
@@ -31,9 +33,9 @@ public class OrderService {
 
     public void delete(Long orderId) {
         Session session = DbUnit.getSessionFactory().openSession();
-
+        
         Transaction transaction = session.beginTransaction();
-        ;
+        orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
         try {
             orderRepository.deleteBooksFromOrder(orderId, session);
             orderRepository.deleteById(orderId, session);
@@ -44,17 +46,17 @@ public class OrderService {
             session.close();
         }
     }
-   
+
     public void update(Long orderId, OrderDto orderDto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
+        Order order = orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
+        order.setPrice(orderDto.getPrice());
+        order.setBooks(DtoConverter.constructBookSet(orderDto.getBookDtos()));
+        order.setPrice(orderDto.getPrice());
+        order.setOrderdate(orderDto.getOrderdate());
         try {
-            Order order = orderRepository.findOne(orderId, session);
-            order.setPrice(orderDto.getPrice());
-            order.setBooks(DtoConverter.constructBookSet(orderDto.getBookDtos()));
-            order.setPrice(orderDto.getPrice());
-            order.setOrderdate(orderDto.getOrderdate());
             orderRepository.update(order, session);
             transaction.commit();
         } catch (Exception e) {
@@ -65,24 +67,20 @@ public class OrderService {
         }
     }
 
-    public void create(Long userId,Long ...bookId ) {
+    public void create(Long userId, Long... bookId) {
         Session session = DbUnit.getSessionFactory().openSession();
-
         Transaction transaction = session.beginTransaction();
-        
-        
-        try {
-            Order order =new Order();
-            var totalPrice = new BigDecimal(0);
-            for(int i=0;i<bookId.length;i++) {
-                Book book=bookRepository.findOne(bookId[i], session);
+        Order order = new Order();
+        BigDecimal totalPrice = new BigDecimal(0);
+        for (int i = 0; i < bookId.length; i++) {
+            Book book = bookRepository.findOne(bookId[i], session).orElseThrow(BookNotFoundException::new);
             order.addBook(book);
             totalPrice = totalPrice.add(book.getPrice());
-            }
-            order.setUser(userRepository.findOne(userId, session));
-            var date = new Date();
-            order.setOrderdate(date);
-            order.setPrice(totalPrice);
+        }
+        order.setUser(userRepository.findOne(userId, session).orElseThrow(RoleNotFoundException::new));
+        order.setOrderdate(new Date());
+        order.setPrice(totalPrice);
+        try {
             orderRepository.create(order, session);
             transaction.commit();
         } catch (Exception e) {
@@ -117,18 +115,10 @@ public class OrderService {
 
     public OrderDto getOrderById(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
-
         OrderDto orderDto = null;
-        try {
-            orderDto = DtoConverter.constructOrderDTO(orderRepository.findOne(id, session));
-            orderDto.setBookDtos(DtoConverter.constructBookDtoSet(getAllOrderBooks(id)));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        } finally {
-            session.close();
-        }
+        orderDto = DtoConverter
+                .constructOrderDTO(orderRepository.findOne(id, session).orElseThrow(OrderNotFoundException::new));
+        orderDto.setBookDtos(DtoConverter.constructBookDtoSet(getAllOrderBooks(id)));
         return orderDto;
     }
 
@@ -148,11 +138,10 @@ public class OrderService {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        ;
+        System.out.println("Adding a book...");
+        Order order = orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
+        order.addBook(bookRepository.findOne(bookId, session).orElseThrow(OrderNotFoundException::new));
         try {
-            System.out.println("Adding a book...");
-            Order order = orderRepository.findOne(orderId, session);
-            order.addBook(bookRepository.findOne(bookId, session));
             orderRepository.update(order, session);
             transaction.commit();
         } catch (Exception e) {
@@ -162,17 +151,17 @@ public class OrderService {
             session.close();
         }
     }
+
     public void deleteBookFromOrder(Long orderId, Long bookId) {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        ;
+        System.out.println("Adding a book...");
+        Order order = orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
+        Set<Book> books = orderRepository.getAllOrderBooks(orderId, session);
+        books.remove(bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new));
+        order.setBooks(books);
         try {
-            System.out.println("Adding a book...");
-            Order order = orderRepository.findOne(orderId, session);
-            Set<Book> books=orderRepository.getAllOrderBooks(orderId, session);
-            books.remove(bookRepository.findOne(bookId, session));
-            order.setBooks(books);
             orderRepository.update(order, session);
             transaction.commit();
         } catch (Exception e) {

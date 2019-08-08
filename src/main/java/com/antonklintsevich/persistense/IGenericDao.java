@@ -1,6 +1,7 @@
 package com.antonklintsevich.persistense;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Session;
 
@@ -8,7 +9,7 @@ import com.antonklintsevich.entity.AbstractEntity;
 
 public interface IGenericDao<T extends AbstractEntity> {
 
-    T findOne(final Long id, Session session);
+    Optional<T> findOne(final Long id, Session session);
 
     List<T> findAll(Session session);
 

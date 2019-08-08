@@ -2,10 +2,12 @@ package com.antonklintsevich.persistense;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.Session;
 
 import com.antonklintsevich.entity.AbstractEntity;
+import com.antonklintsevich.exception.MyResourceNotFoundException;
 
 public abstract class AbstractHibernateDao<T extends AbstractEntity> implements IGenericDao<T> {
 
@@ -19,8 +21,8 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> implements 
 
     @SuppressWarnings("unchecked")
     @Override
-    public T findOne(Long id, Session session) {
-        return (T) session.get(clazz, id);
+    public Optional<T> findOne(Long id, Session session) {
+        return Optional.ofNullable((T) session.get(clazz, id));
     }
 
     @SuppressWarnings("unchecked")
@@ -48,7 +50,6 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> implements 
 
     @Override
     public void deleteById(Long entityId, Session session) {
-        T entity = findOne(entityId, session);
-        session.delete(entity);
+       findOne(entityId, session).ifPresent(entity -> session.delete(entity));
     }
 }

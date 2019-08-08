@@ -18,6 +18,9 @@ import com.antonklintsevich.common.UserDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.exception.BookNotFoundException;
+import com.antonklintsevich.exception.RoleNotFoundException;
+import com.antonklintsevich.exception.UserNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.RoleRepository;
@@ -60,11 +63,10 @@ public class UserService {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        ;
+        System.out.println("Adding a book...");
+        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
+        user.addBook(bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new));
         try {
-            System.out.println("Adding a book...");
-            User user = userRepository.findOne(userId, session);
-            user.addBook(bookRepository.findOne(bookId, session));
             userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -80,11 +82,10 @@ public class UserService {
 
         Session session = DbUnit.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
-        ;
+        System.out.println("Adding a role...");
+        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
+        user.addRole(roleRepository.findOne(roleId, session).orElseThrow(RoleNotFoundException::new));
         try {
-            System.out.println("Adding a role...");
-            User user = userRepository.findOne(userId, session);
-            user.addRole(roleRepository.findOne(roleId, session));
             userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -98,9 +99,8 @@ public class UserService {
 
     public void delete(Long userId) {
         Session session = DbUnit.getSessionFactory().openSession();
-
+        userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
         Transaction transaction = session.beginTransaction();
-        ;
         try {
             userRepository.deleteById(userId, session);
             transaction.commit();
@@ -115,14 +115,15 @@ public class UserService {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
+
+        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
+        user.setUsername(userDto.getUsername());
+        user.setPassword(userDto.getPassword());
+        user.setFirstname(userDto.getFirstname());
+        user.setLastname(userDto.getLastname());
+        user.setDob(userDto.getDob());
+        user.setEmail(userDto.getEmail());
         try {
-            User user = userRepository.findOne(userId, session);
-            user.setUsername(userDto.getUsername());
-            user.setPassword(userDto.getPassword());
-            user.setFirstname(userDto.getFirstname());
-            user.setLastname(userDto.getLastname());
-            user.setDob(userDto.getDob());
-            user.setEmail(userDto.getEmail());
             userRepository.update(user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -138,7 +139,6 @@ public class UserService {
         Transaction transaction = session.beginTransaction();
         User user = DtoConverter.constructUserFromDto(dto);
         try {
-
             userRepository.create(user, session);
             transaction.commit();
         } catch (Exception e) {
@@ -153,8 +153,9 @@ public class UserService {
         Session session = DbUnit.getSessionFactory().openSession();
 
         UserDto userDto = null;
+        
+            userDto = DtoConverter.constructUserDto(userRepository.findOne(id, session).orElseThrow(UserNotFoundException::new));
         try {
-            userDto = DtoConverter.constructUserDto(userRepository.findOne(id, session));
             userDto.setRoles(DtoConverter.constructRoleDtoSet(getAllUserRoles(id)));
             userDto.setBooks(DtoConverter.constructBookDtoSet(getAllUserBooks(id)));
         } catch (Exception e) {
@@ -166,15 +167,12 @@ public class UserService {
         return userDto;
     }
 
-    public Set<Book> getAllUserBooks(Long id) {
+    private Set<Book> getAllUserBooks(Long id) {
         Session session = DbUnit.getSessionFactory().openSession();
-
         Set<Book> books;
-        try {
             books = userRepository.getAllUserBooks(id, session);
-        } finally {
             session.close();
-        }
+       
         return books;
     }
 
