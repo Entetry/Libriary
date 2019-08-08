@@ -28,7 +28,7 @@ public class Order extends AbstractEntity {
     private User user;
     @Column(name="order_date")
     private Date orderdate;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books=new HashSet<>();
     @Column(name="price")

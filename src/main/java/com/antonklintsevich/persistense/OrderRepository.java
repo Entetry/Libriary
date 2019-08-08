@@ -17,4 +17,11 @@ public class OrderRepository extends AbstractHibernateDao<Order> {
         Hibernate.initialize(order.getBooks());
         return order.getBooks();
     }
+
+    public void deleteBooksFromOrder(Long orderId, Session session) {
+        Order order = findOne(orderId, session);
+        order.setBooks(null);
+        session.saveOrUpdate(order);
+
+    }
 }

@@ -35,6 +35,7 @@ public class OrderService {
         Transaction transaction = session.beginTransaction();
         ;
         try {
+            orderRepository.deleteBooksFromOrder(orderId, session);
             orderRepository.deleteById(orderId, session);
             transaction.commit();
         } catch (Exception e) {
@@ -43,7 +44,7 @@ public class OrderService {
             session.close();
         }
     }
-
+   
     public void update(Long orderId, OrderDto orderDto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -152,7 +153,27 @@ public class OrderService {
             System.out.println("Adding a book...");
             Order order = orderRepository.findOne(orderId, session);
             order.addBook(bookRepository.findOne(bookId, session));
-            session.saveOrUpdate(order);
+            orderRepository.update(order, session);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        } finally {
+            session.close();
+        }
+    }
+    public void deleteBookFromOrder(Long orderId, Long bookId) {
+
+        Session session = DbUnit.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        ;
+        try {
+            System.out.println("Adding a book...");
+            Order order = orderRepository.findOne(orderId, session);
+            Set<Book> books=orderRepository.getAllOrderBooks(orderId, session);
+            books.remove(bookRepository.findOne(bookId, session));
+            order.setBooks(books);
+            orderRepository.update(order, session);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();

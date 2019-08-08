@@ -15,13 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.services.OrderService;
+
 @RestController
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
     @PutMapping("/orders/addbook")
-    public void addSubgenre(@RequestParam("orderId") String orderId, @RequestParam("bookId") String bookId) {
-        orderService.addBookToOrder(Long.parseLong(orderId), Long.parseLong(bookId));
+    public void addBook(@RequestParam("orderId") Long orderId, @RequestParam("bookId") Long bookId) {
+        orderService.addBookToOrder(orderId, bookId);
+
+    }
+
+    @DeleteMapping("/orders/deletebook")
+    public void deleteBook(@RequestParam("orderId") Long orderId, @RequestParam("bookId") Long bookId) {
+        orderService.deleteBookFromOrder(orderId, bookId);
 
     }
 
@@ -38,15 +46,15 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public void create(@RequestParam("userId") Long userId,@RequestParam("bookId")Long ...bookId) {
-     
-        orderService.create(userId,bookId);
+    public void create(@RequestParam("userId") Long userId, @RequestParam("bookId") Long... bookId) {
+
+        orderService.create(userId, bookId);
 
     }
 
     @GetMapping("/orders/{orderId}")
     @ResponseBody
-    public OrderDto getBookbyId(@PathVariable("orderId") Long orderId) {
+    public OrderDto getOrderbyId(@PathVariable("orderId") Long orderId) {
         return orderService.getOrderById(orderId);
     }
 
