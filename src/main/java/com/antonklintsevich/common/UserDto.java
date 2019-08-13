@@ -26,7 +26,8 @@ public class UserDto implements Serializable {
     private Set<RoleDto> roles;
     @JsonProperty
     private String username;
-   
+    @JsonProperty
+    private boolean enabled;
     public UserDto(Long id, String username, String firstname, String lastname, Date dob, String email,
             String password) {
         this.id = id;
@@ -113,5 +114,13 @@ public class UserDto implements Serializable {
 
     public void setRoles(Set<RoleDto> roles) {
         this.roles = roles;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

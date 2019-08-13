@@ -12,7 +12,7 @@ import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.UserNotFoundException;
 
 @Repository
-public class UserRepository extends AbstractHibernateDao<User> {
+public class UserRepository extends AbstractHibernateDao<User> implements IUserRepository {
 
     public Set<Book> getAllUserBooks(Long id, Session session) throws UserNotFoundException {
         User user = findOne(id, session).orElseThrow(UserNotFoundException::new);
@@ -24,5 +24,11 @@ public class UserRepository extends AbstractHibernateDao<User> {
         User user = findOne(id, session).orElseThrow(UserNotFoundException::new);
         Hibernate.initialize(user.getRoles());
         return user.getRoles();
+    }
+    @Override
+    public User findByUsername(String username,Session session) {
+        
+        return (User)session.createQuery("from User u where u.username= :username").setParameter("username", username).uniqueResult();
+         
     }
 }

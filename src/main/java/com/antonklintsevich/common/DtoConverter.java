@@ -168,6 +168,7 @@ public class DtoConverter {
         dto.setUsername(user.getUsername());
         dto.setBooks(constructBookDtoSet(user.getBooks()));
         dto.setRoles(constructRoleDtoSet(user.getRoles()));
+        dto.setEnabled(user.isEnabled());
         return dto;
     }
 
