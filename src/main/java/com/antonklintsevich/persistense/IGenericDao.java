@@ -18,6 +18,4 @@ public interface IGenericDao<T extends AbstractEntity> {
     T update(final T entity, Session session);
 
     void delete(final T entity, Session session);
-
-    void deleteById(final Long entityId, Session session);
 }

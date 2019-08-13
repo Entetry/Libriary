@@ -47,9 +47,4 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> implements 
     public void delete(T entity, Session session) {
         session.delete(entity);
     }
-
-    @Override
-    public void deleteById(Long entityId, Session session) {
-       findOne(entityId, session).ifPresent(entity -> session.delete(entity));
-    }
 }

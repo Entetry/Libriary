@@ -31,9 +31,9 @@ public class BookService {
         Session session = DbUnit.getSessionFactory().openSession();
 
         Transaction transaction = session.beginTransaction();
-        bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new);
+        Book book=bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new);
         try {
-            bookRepository.deleteById(bookId, session);
+            bookRepository.delete(book, session);
             transaction.commit();
         } catch (Exception e) {
 

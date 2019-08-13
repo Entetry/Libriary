@@ -1,15 +1,24 @@
 package com.antonklintsevich.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.antonklintsevich.common.BookDto;
@@ -27,13 +36,15 @@ import com.antonklintsevich.persistense.RoleRepository;
 import com.antonklintsevich.persistense.UserRepository;
 
 @Service
-public class UserService {
+public class UserService {//implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private BookRepository bookRepository;
     @Autowired
     private RoleRepository roleRepository;
+//    @Autowired
+//    private BCryptPasswordEncoder passwordEncoder;
 
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
@@ -99,10 +110,10 @@ public class UserService {
 
     public void delete(Long userId) {
         Session session = DbUnit.getSessionFactory().openSession();
-        userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
+        User user=userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
         Transaction transaction = session.beginTransaction();
         try {
-            userRepository.deleteById(userId, session);
+            userRepository.delete(user, session);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -138,6 +149,7 @@ public class UserService {
 
         Transaction transaction = session.beginTransaction();
         User user = DtoConverter.constructUserFromDto(dto);
+        user.setPassword(dto.getPassword());
         try {
             userRepository.create(user, session);
             transaction.commit();
@@ -197,5 +209,26 @@ public class UserService {
         }
         return roles;
     }
+   /* @Transactional(readOnly = true)
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user=userRepository.findByUsername(username);
+        if(user==null) {
+           throw new UsernameNotFoundException("invalid username or password");  
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(),
+                mapRolesToAuthorities(user.getRoles()));
+    }
+    private  org.springframework.security.core.userdetails.User buildUserForAuthentication(User user, 
+            List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
+                user.isEnabled(), true, true, true, authorities);
+        }
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRolename()))
+                .collect(Collectors.toList());
+    }*/
 
 }

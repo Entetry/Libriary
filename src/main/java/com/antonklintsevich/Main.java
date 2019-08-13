@@ -4,15 +4,19 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.security.SpringSecurityConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
-//    public static void main(String[] args) throws JsonProcessingException {
+  ///public static void main(String[] args) throws JsonProcessingException {
 //        User user = new User();
 //        user.setDob(new Date());
 //        user.setEmail("kek@gmail.com");
@@ -41,5 +45,7 @@ public class Main {
 //        dto.setPrice(new BigDecimal("0.05"));
 //        ObjectMapper mapper = new ObjectMapper();
 //        System.out.println(mapper.writeValueAsString(dto));
-//    }
-}
+//       BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+ //      System.out.println(passwordEncoder.encode("1233"));
+  // }
+   }

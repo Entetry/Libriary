@@ -35,7 +35,7 @@ public class User extends AbstractEntity {
     private String email;
     private String password;
     private String username;
-
+    private boolean enabled;
     private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
 
@@ -125,6 +125,14 @@ public class User extends AbstractEntity {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+    @Column(name = "enabled", nullable = false)
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
 }

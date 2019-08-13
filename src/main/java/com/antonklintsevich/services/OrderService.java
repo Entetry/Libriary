@@ -35,10 +35,10 @@ public class OrderService {
         Session session = DbUnit.getSessionFactory().openSession();
         
         Transaction transaction = session.beginTransaction();
-        orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
+        Order order=orderRepository.findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
         try {
             orderRepository.deleteBooksFromOrder(orderId, session);
-            orderRepository.deleteById(orderId, session);
+            orderRepository.delete(order, session);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
