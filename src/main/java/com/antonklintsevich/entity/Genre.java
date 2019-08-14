@@ -15,7 +15,7 @@ public class Genre extends AbstractEntity {
     private Long id;
     @Column(name = "genre_name")
     private String genrename;
-
+    @Override
     public Long getId() {
         return id;
     }

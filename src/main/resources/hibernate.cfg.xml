@@ -29,5 +29,6 @@
        <mapping class="com.antonklintsevich.entity.Genre"/>
        <mapping class="com.antonklintsevich.entity.Role"/>
        <mapping class="com.antonklintsevich.entity.Order"/>
+       <mapping class="com.antonklintsevich.entity.Authority"/>
     </session-factory>
 </hibernate-configuration>

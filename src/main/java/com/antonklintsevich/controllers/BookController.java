@@ -27,6 +27,7 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @PreAuthorize("hasAuthority('WRITE_AUTHORITY')")
     @PutMapping("/books/addsubgenre")
     public void addSubgenre(@RequestParam("bookId") String bookId, @RequestParam("subgenreId") String subgenreId) {
         try {
@@ -38,8 +39,8 @@ public class BookController {
 
     @GetMapping("/books")
     @ResponseBody
-    @Secured("ROLE_ADMIN")
-   // @PreAuthorize("hasRole('ADMIN')")
+    // @Secured("WRITE_AUTHORITY")
+    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
     public List<BookDto> getAllBooks() {
         return bookService.getAllBooksAsBookDTO();
     }
@@ -53,14 +54,16 @@ public class BookController {
         }
     }
 
+    @PreAuthorize("hasAuthority('WRITE_AUTHORITY')")
     @PostMapping("/books")
-    
+
     public void create(@RequestBody BookDto bookDto) {
 
         bookService.create(bookDto);
 
     }
 
+    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
     @GetMapping("/books/{bookId}")
     @ResponseBody
     public BookDto getBookbyId(@PathVariable("bookId") Long bookId) {
@@ -71,6 +74,7 @@ public class BookController {
         }
     }
 
+    @PreAuthorize("hasAuthority('WRITE_AUTHORITY')")
     @PutMapping("/books/{bookId}")
     public void update(@PathVariable("bookId") Long bookId, @RequestBody BookDto bookDto) {
         try {

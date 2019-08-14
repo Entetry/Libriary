@@ -33,7 +33,7 @@ public class Order extends AbstractEntity {
     private Set<Book> books=new HashSet<>();
     @Column(name="price")
     private BigDecimal price;
-
+    @Override
     public Long getId() {
         return id;
     }

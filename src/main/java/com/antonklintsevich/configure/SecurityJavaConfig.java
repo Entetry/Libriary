@@ -1,17 +1,24 @@
 package com.antonklintsevich.configure;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.access.expression.SecurityExpressionOperations;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import com.antonklintsevich.security.CustomAccessDeniedHandler;
@@ -55,10 +62,13 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 //            .accessDeniedHandler(accessDeniedHandler)
 //            .authenticationEntryPoint(restAuthenticationEntryPoint)
 //            .and()
-//            .authorizeRequests()
+//            .authorizeRequests(
+                
                 .antMatchers("/**").authenticated().antMatchers("/login").permitAll()
 
                 .antMatchers("/users/**").authenticated()
+                .and().formLogin()
+                .successHandler(mySuccessHandler)
 //                 .antMatchers("/books/**").hasRole("ADMIN")
               
 //            .failureHandler(myFailureHandler)
@@ -72,6 +82,11 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         auth.setUserDetailsService(userServiceIml);
       auth.setPasswordEncoder(encoder());
         return auth;
+    }
+    
+    @Bean
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
     }
     @Bean
     public PasswordEncoder encoder() {

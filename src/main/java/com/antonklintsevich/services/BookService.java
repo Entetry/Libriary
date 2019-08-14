@@ -19,6 +19,8 @@ import com.antonklintsevich.exception.SubgenreNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.SubgenreRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class BookService {
@@ -82,6 +84,9 @@ public class BookService {
 
     public List<BookDto> getAllBooksAsBookDTO() {
         List<BookDto> bookDtos = new ArrayList<BookDto>();
+        ch.qos.logback.classic.Logger logger = 
+                (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("com.antonklintsevich.debug");
+        logger.debug("DIMA POSHEL NAHUI");
         for (Book book : getAllBooks()) {
             bookDtos.add(DtoConverter.constructBookDTO(book));
         }
