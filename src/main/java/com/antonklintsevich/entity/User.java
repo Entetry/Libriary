@@ -16,7 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity(name = "User")
-@Table(name = "\"user\"")
+@Table(name = "users")
 public class User extends AbstractEntity {
     public User() {
     }
@@ -28,13 +28,14 @@ public class User extends AbstractEntity {
         this.email = email;
         this.password = password;
     }
-
+  
     private Long id;
     private String firstname;
     private String lastname;
     private Date dob;
     private String email;
     private String password;
+    @Column
     private String username;
     private boolean enabled;
     private Set<Role> roles;

@@ -20,6 +20,7 @@ public class Subgenre extends AbstractEntity {
     private Genre genre;
     @Column(name = "subgenre_name")
     private String subgenrename;
+
     @Override
     public Long getId() {
         return id;

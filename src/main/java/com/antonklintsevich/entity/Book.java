@@ -16,7 +16,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
+
 @Entity(name = "Book")
+@Indexed
 @Table(name = "book")
 public class Book extends AbstractEntity {
 
@@ -32,7 +37,9 @@ public class Book extends AbstractEntity {
     };
 
     private Long id;
+    @Field(termVector = TermVector.YES)
     private String bookname;
+    @Field(termVector = TermVector.YES)
     private String author;
     private Date dateAdd;
     private BigDecimal price;

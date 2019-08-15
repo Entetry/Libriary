@@ -1,5 +1,9 @@
 package com.antonklintsevich.configure;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -93,4 +97,9 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public EntityManager entityManager() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.antonklintsevich.entity_catalog");
+        return emf.createEntityManager();
+    }
 }

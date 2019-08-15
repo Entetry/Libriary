@@ -1,6 +1,5 @@
 package com.antonklintsevich.entity;
 
-import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -11,18 +10,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-@Entity(name="Authority")
+@Entity(name = "Authority")
 @Table(name = "authority")
 public class Authority extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="authority_id")
+    @Column(name = "authority_id")
     private Long id;
-    @Column(name="authority_name")
+    @Column(name = "authority_name")
     private String name;
 
- @ManyToMany(mappedBy = "authorities")
+    @ManyToMany(mappedBy = "authorities")
     private Set<Role> roles;
+
     @Override
     public Long getId() {
         return id;
@@ -47,6 +47,5 @@ public class Authority extends AbstractEntity {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 
 }

@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Order")
-@Table(name = "\"order\"")
+@Table(name = "orders")
 public class Order extends AbstractEntity {
     @Id
     @Column(name = "order_id")
