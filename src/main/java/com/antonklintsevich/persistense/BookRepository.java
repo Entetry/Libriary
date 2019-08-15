@@ -1,5 +1,8 @@
 package com.antonklintsevich.persistense;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
@@ -17,5 +20,17 @@ public class BookRepository extends AbstractHibernateDao<Book> {
         Hibernate.initialize(book.getSubgenres());
         return book.getSubgenres();
     }
+    public Set<Book> findBooksByUsersRequest(String data,Session session){
+   //     session.createQuery("from Book b where b.bookname like ':data%' ").setParameter("data", data).list();
+        Set<Book> books=new HashSet<>();
+        String query[] = {      
+                "from Book b where b.bookname like '"+data+"%'", 
+                "from Book b where b.author like '" +data +"%'" 
+             };
+        for(String q : query) {
+            books.addAll((List<Book>)(session.createQuery(q).list()));
+        }
+        return books;
+    } 
 
 }

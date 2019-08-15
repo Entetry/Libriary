@@ -44,7 +44,13 @@ public class BookController {
     public List<BookDto> getAllBooks() {
         return bookService.getAllBooksAsBookDTO();
     }
-
+    @GetMapping("/books/search")
+    @ResponseBody
+    // @Secured("WRITE_AUTHORITY")
+    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
+    public List<BookDto> getBooksByUserData(@RequestParam(name="data") String data){
+        return bookService.getBooksByUsersData(data);
+    }
     @DeleteMapping("/books/{bookId}")
     public void delete(@PathVariable("bookId") Long bookId) {
         try {

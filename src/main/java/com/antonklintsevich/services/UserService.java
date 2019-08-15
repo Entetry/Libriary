@@ -25,6 +25,8 @@ import com.antonklintsevich.persistense.BookRepository;
 import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.RoleRepository;
 import com.antonklintsevich.persistense.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {
@@ -34,7 +36,7 @@ public class UserService {
     private BookRepository bookRepository;
     @Autowired
     private RoleRepository roleRepository;
-
+    Logger LOGGER= LoggerFactory.getLogger(UserService.class);
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 

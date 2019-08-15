@@ -42,7 +42,6 @@ public class Book extends AbstractEntity {
     @Id
     @GeneratedValue
     @Column(name = "book_id")
-    @Override
     public Long getId() {
         return id;
     }

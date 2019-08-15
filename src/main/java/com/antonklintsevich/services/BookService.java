@@ -66,6 +66,14 @@ public class BookService {
         }
     }
 
+    public List<BookDto> getBooksByUsersData(String data) {
+        List<BookDto> bookDtos = new ArrayList<BookDto>();
+
+        Session session = DbUnit.getSessionFactory().openSession();
+        bookDtos.addAll(DtoConverter.constructBookDtoSet(bookRepository.findBooksByUsersRequest(data, session)));
+        return bookDtos;
+    }
+
     public void create(BookDto bookDto) {
         Session session = DbUnit.getSessionFactory().openSession();
 
@@ -84,8 +92,8 @@ public class BookService {
 
     public List<BookDto> getAllBooksAsBookDTO() {
         List<BookDto> bookDtos = new ArrayList<BookDto>();
-        ch.qos.logback.classic.Logger logger = 
-                (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("com.antonklintsevich.debug");
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger("com.antonklintsevich.debug");
         logger.debug("DIMA POSHEL NAHUI");
         for (Book book : getAllBooks()) {
             bookDtos.add(DtoConverter.constructBookDTO(book));
