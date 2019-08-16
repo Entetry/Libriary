@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +32,16 @@ import com.antonklintsevich.persistense.UserRepository;
 public class UserServiceIml implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Session session = DbUnit.getSessionFactory().openSession();
-        User user = userRepository.findByUsername(username, session);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        User user = userRepository.findByUsername(username, entityManager);
         if (user == null) {
             throw new UsernameNotFoundException("invalid username or password");
         }
-        session.close();
+        entityManager.close();
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 getGrantedAuthorities(user.getRoles()));
     }

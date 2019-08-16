@@ -2,8 +2,9 @@ package com.antonklintsevich.persistense;
 
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import com.antonklintsevich.entity.Book;
@@ -13,16 +14,15 @@ import com.antonklintsevich.exception.OrderNotFoundException;
 @Repository
 public class OrderRepository extends AbstractHibernateDao<Order> {
 
-    public Set<Book> getAllOrderBooks(Long id, Session session) {
-        Order order = findOne(id, session).orElseThrow(OrderNotFoundException::new);
+    public Set<Book> getAllOrderBooks(Long id, EntityManager entityManager) {
+        Order order = findOne(id, entityManager).orElseThrow(OrderNotFoundException::new);
         Hibernate.initialize(order.getBooks());
         return order.getBooks();
     }
 
-    public void deleteBooksFromOrder(Long orderId, Session session) {
-        Order order = findOne(orderId, session).orElseThrow(OrderNotFoundException::new);
+    public void deleteBooksFromOrder(Long orderId, EntityManager entityManager) {
+        Order order = findOne(orderId, entityManager).orElseThrow(OrderNotFoundException::new);
         order.setBooks(null);
-        session.saveOrUpdate(order);
-
+        entityManager.merge(order);
     }
 }

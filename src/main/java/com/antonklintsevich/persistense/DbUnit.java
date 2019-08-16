@@ -12,20 +12,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.service.ServiceRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
-public class DbUnit {
+public class DbUnit {}
 
-    private static SessionFactory sessionFactory;
-  
-
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
-            ServiceRegistry sr = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-            
-            sessionFactory = configuration.buildSessionFactory(sr);
-        }
-        return sessionFactory;
-    }
-     }
 

@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -19,6 +23,7 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.BookNotFoundException;
+import com.antonklintsevich.exception.OrderNotFoundException;
 import com.antonklintsevich.exception.RoleNotFoundException;
 import com.antonklintsevich.exception.UserNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
@@ -36,7 +41,10 @@ public class UserService {
     private BookRepository bookRepository;
     @Autowired
     private RoleRepository roleRepository;
-    Logger LOGGER= LoggerFactory.getLogger(UserService.class);
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
+    Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     public List<UserDto> getAllUserAsUserDTO() {
         List<UserDto> userDtos = new ArrayList<UserDto>();
 
@@ -48,77 +56,76 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        Session session = DbUnit.getSessionFactory().openSession();
-
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<User> users = new ArrayList<>();
         try {
-            users.addAll(userRepository.findAll(session));
+            users.addAll(userRepository.findAll(entityManager));
         }
 
         finally {
-            session.close();
+            entityManager.close();
         }
         return users;
     }
 
     public void addBookToUser(Long userId, Long bookId) {
-
-        Session session = DbUnit.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         System.out.println("Adding a book...");
-        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
-        user.addBook(bookRepository.findOne(bookId, session).orElseThrow(BookNotFoundException::new));
+        User user = userRepository.findOne(userId, entityManager).orElseThrow(UserNotFoundException::new);
+        user.addBook(bookRepository.findOne(bookId, entityManager).orElseThrow(BookNotFoundException::new));
         try {
-            userRepository.update(user, session);
+            userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
             transaction.rollback();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public void addRoleToUser(Long userId, Long roleId) {
-
-        Session session = DbUnit.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         System.out.println("Adding a role...");
-        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
-        user.addRole(roleRepository.findOne(roleId, session).orElseThrow(RoleNotFoundException::new));
+        User user = userRepository.findOne(userId, entityManager).orElseThrow(UserNotFoundException::new);
+        user.addRole(roleRepository.findOne(roleId, entityManager).orElseThrow(RoleNotFoundException::new));
         try {
-            userRepository.update(user, session);
+            userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
             transaction.rollback();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public void delete(Long userId) {
-        Session session = DbUnit.getSessionFactory().openSession();
-        userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
-        Transaction transaction = session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        userRepository.findOne(userId, entityManager).orElseThrow(UserNotFoundException::new);
         try {
-            userRepository.deleteById(userId, session);
+            userRepository.deleteById(userId, entityManager);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void update(Long userId, UserDto userDto) {
-        Session session = DbUnit.getSessionFactory().openSession();
-
-        Transaction transaction = session.beginTransaction();
-
-        User user = userRepository.findOne(userId, session).orElseThrow(UserNotFoundException::new);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        User user = userRepository.findOne(userId, entityManager).orElseThrow(UserNotFoundException::new);
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
         user.setFirstname(userDto.getFirstname());
@@ -126,37 +133,36 @@ public class UserService {
         user.setDob(userDto.getDob());
         user.setEmail(userDto.getEmail());
         try {
-            userRepository.update(user, session);
+            userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void create(UserDto dto) {
-        Session session = DbUnit.getSessionFactory().openSession();
-
-        Transaction transaction = session.beginTransaction();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         User user = DtoConverter.constructUserFromDto(dto);
         try {
-            userRepository.create(user, session);
+            userRepository.create(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
             transaction.rollback();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public UserDto getUserById(Long id) {
-        Session session = DbUnit.getSessionFactory().openSession();
-
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         UserDto userDto = null;
-        
-            userDto = DtoConverter.constructUserDto(userRepository.findOne(id, session).orElseThrow(UserNotFoundException::new));
+        userDto = DtoConverter
+                .constructUserDto(userRepository.findOne(id, entityManager).orElseThrow(UserNotFoundException::new));
         try {
             userDto.setRoles(DtoConverter.constructRoleDtoSet(getAllUserRoles(id)));
             userDto.setBooks(DtoConverter.constructBookDtoSet(getAllUserBooks(id)));
@@ -164,23 +170,22 @@ public class UserService {
             e.printStackTrace();
 
         } finally {
-            session.close();
+            entityManager.close();
         }
         return userDto;
     }
 
     private Set<Book> getAllUserBooks(Long id) {
-        Session session = DbUnit.getSessionFactory().openSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Set<Book> books;
-            books = userRepository.getAllUserBooks(id, session);
-            session.close();
-       
+        books = userRepository.getAllUserBooks(id, entityManager);
+        entityManager.close();
+
         return books;
     }
 
     public Set<BookDto> getAllUserBooksAsBookDto(Long userId) {
         Set<BookDto> bookDtos = new HashSet<>();
-
         for (Book book : getAllUserBooks(userId)) {
             bookDtos.add(DtoConverter.constructBookDTO(book));
         }
@@ -189,13 +194,12 @@ public class UserService {
     }
 
     public Set<Role> getAllUserRoles(Long id) {
-        Session session = DbUnit.getSessionFactory().openSession();
-
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Set<Role> roles;
         try {
-            roles = userRepository.getAllUserRoles(id, session);
+            roles = userRepository.getAllUserRoles(id, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return roles;
     }
