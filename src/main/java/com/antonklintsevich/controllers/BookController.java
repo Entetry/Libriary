@@ -1,6 +1,8 @@
 package com.antonklintsevich.controllers;
 
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -48,7 +50,7 @@ public class BookController {
     @ResponseBody
     // @Secured("WRITE_AUTHORITY")
     @PreAuthorize("hasAuthority('READ_AUTHORITY')")
-    public List<BookDto> getBooksByUserData(@RequestParam(name="data") String data){
+    public Set<BookDto> getBooksByUserData(@RequestParam(name="data") String data){
         return bookService.getBooksByUsersData(data);
     }
     @DeleteMapping("/books/{bookId}")
@@ -89,5 +91,19 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
         }
     }
-
+    @GetMapping("/books/sort")
+    @ResponseBody
+    // @Secured("WRITE_AUTHORITY")
+    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
+    public List<BookDto> getSortedAscBooks(@RequestParam(name="field") String field,@RequestParam(name="type") String type){
+        if(!((type.equals("ASC")||(type.equals("DESC"))))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid sort type,please use ASC or DESC");
+        }
+        
+        else if(!((field.equals("price"))||(field.equals("bookname"))||(field.equals("author"))||(field.equals("numberofpages")))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid fieldname.You can only sort by bookname,author,price and numberofpages");
+        }
+        return bookService.getAllBookDtosSorted(field, type);
+    }
+  
 }

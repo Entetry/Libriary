@@ -34,6 +34,14 @@ public class BookRepository extends AbstractHibernateDao<Book> {
                 .getResultList()));
         return books;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Book> getAllBooksSorted(EntityManager entityManager, String field, String sorttype) {
+        
+        return entityManager.createNativeQuery("SELECT * FROM book ORDER BY " + field +" " + sorttype, Book.class).getResultList();
+//        query.setParameter("field", field);
+//        query.setParameter("sorttype", sorttype);
+    }
 //    public Set<Book> findBooksByUsersRequest(String data, EntityManager entityManager) {
 //        Set<Book> books = new HashSet<>();
 //        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);

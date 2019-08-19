@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -12,6 +13,8 @@ import javax.persistence.EntityTransaction;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.antonklintsevich.common.DtoConverter;
@@ -28,6 +31,7 @@ import com.antonklintsevich.persistense.UserRepository;
 
 @Service
 public class OrderService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     @Autowired
     private BookRepository bookRepository;
     @Autowired
@@ -48,6 +52,7 @@ public class OrderService {
             orderRepository.deleteById(orderId, entityManager);
             transaction.commit();
         } catch (Exception e) {
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -67,7 +72,7 @@ public class OrderService {
             orderRepository.update(order, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -92,7 +97,7 @@ public class OrderService {
             orderRepository.create(order, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -100,31 +105,21 @@ public class OrderService {
     }
 
     public List<OrderDto> getAllOrdersAsOrderDTO() {
-        List<OrderDto> orderDtos = new ArrayList<>();
-
-        for (Order order : getAllOrders()) {
-            orderDtos.add(DtoConverter.constructOrderDTO(order));
-        }
-
-        return orderDtos;
+        return getAllOrders().stream().map(order->DtoConverter.constructOrderDTO(order)).collect(Collectors.toList());
     }
 
     private List<Order> getAllOrders() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-        List<Order> orders;
         try {
-            orders = orderRepository.findAll(entityManager);
+            return orderRepository.findAll(entityManager);
         } finally {
             entityManager.close();
         }
-        return orders;
     }
 
     public OrderDto getOrderById(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        OrderDto orderDto = null;
-        orderDto = DtoConverter
+        OrderDto orderDto = DtoConverter
                 .constructOrderDTO(orderRepository.findOne(id, entityManager).orElseThrow(OrderNotFoundException::new));
         orderDto.setBookDtos(DtoConverter.constructBookDtoSet(getAllOrderBooks(id)));
         return orderDto;
@@ -132,20 +127,16 @@ public class OrderService {
 
     private Set<Book> getAllOrderBooks(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-        Set<Book> books;
         try {
-            books = orderRepository.getAllOrderBooks(id, entityManager);
+            return orderRepository.getAllOrderBooks(id, entityManager);
         } finally {
             entityManager.close();
         }
-        return books;
     }
 
     public void addBookToOrder(Long orderId, Long bookId) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         System.out.println("Adding a book...");
@@ -155,7 +146,7 @@ public class OrderService {
             orderRepository.update(order, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -165,7 +156,6 @@ public class OrderService {
     public void deleteBookFromOrder(Long orderId, Long bookId) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         System.out.println("Adding a book...");
@@ -177,7 +167,7 @@ public class OrderService {
             orderRepository.update(order, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();

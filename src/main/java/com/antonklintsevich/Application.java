@@ -21,9 +21,5 @@ public class Application {
         SpringApplication.run(Application.class, args);
 
     }
-    @Bean
-    public EntityManagerFactory EntityManagerFactory(){
-        EntityManagerFactory entityManagerFactory= Persistence.createEntityManagerFactory("com.antonklintsevich.entity_catalog");
-        return entityManagerFactory;
-    }
+   
 }

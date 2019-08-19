@@ -3,6 +3,7 @@ package com.antonklintsevich.persistense;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NamedNativeQueries;
 import javax.persistence.Query;
 
 import org.hibernate.Hibernate;
@@ -12,7 +13,6 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.UserNotFoundException;
-
 @Repository
 public class UserRepository extends AbstractHibernateDao<User> implements IUserRepository {
 

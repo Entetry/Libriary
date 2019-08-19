@@ -1,20 +1,17 @@
 package com.antonklintsevich.services;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
@@ -23,18 +20,15 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.BookNotFoundException;
-import com.antonklintsevich.exception.OrderNotFoundException;
 import com.antonklintsevich.exception.RoleNotFoundException;
 import com.antonklintsevich.exception.UserNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
-import com.antonklintsevich.persistense.DbUnit;
 import com.antonklintsevich.persistense.RoleRepository;
 import com.antonklintsevich.persistense.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -43,29 +37,19 @@ public class UserService {
     private RoleRepository roleRepository;
     @Autowired
     private EntityManagerFactory entityManagerFactory;
-    Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
 
     public List<UserDto> getAllUserAsUserDTO() {
-        List<UserDto> userDtos = new ArrayList<UserDto>();
-
-        for (User user : getAllUsers()) {
-            userDtos.add(DtoConverter.constructUserDto(user));
-        }
-
-        return userDtos;
+        return getAllUsers().stream().map(user -> DtoConverter.constructUserDto(user)).collect(Collectors.toList());
     }
 
     public List<User> getAllUsers() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<User> users = new ArrayList<>();
         try {
-            users.addAll(userRepository.findAll(entityManager));
-        }
-
-        finally {
+            return userRepository.findAll(entityManager);
+        } finally {
             entityManager.close();
         }
-        return users;
     }
 
     public void addBookToUser(Long userId, Long bookId) {
@@ -79,7 +63,7 @@ public class UserService {
             userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -98,7 +82,7 @@ public class UserService {
             userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -115,6 +99,7 @@ public class UserService {
             userRepository.deleteById(userId, entityManager);
             transaction.commit();
         } catch (Exception e) {
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -136,6 +121,7 @@ public class UserService {
             userRepository.update(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -151,7 +137,7 @@ public class UserService {
             userRepository.create(user, entityManager);
             transaction.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("An exeption ocurred!", e);
             transaction.rollback();
         } finally {
             entityManager.close();
@@ -160,15 +146,13 @@ public class UserService {
 
     public UserDto getUserById(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        UserDto userDto = null;
-        userDto = DtoConverter
+        UserDto userDto = DtoConverter
                 .constructUserDto(userRepository.findOne(id, entityManager).orElseThrow(UserNotFoundException::new));
         try {
             userDto.setRoles(DtoConverter.constructRoleDtoSet(getAllUserRoles(id)));
             userDto.setBooks(DtoConverter.constructBookDtoSet(getAllUserBooks(id)));
         } catch (Exception e) {
-            e.printStackTrace();
-
+            LOGGER.error("An exeption ocurred!", e);
         } finally {
             entityManager.close();
         }
@@ -177,31 +161,25 @@ public class UserService {
 
     private Set<Book> getAllUserBooks(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Set<Book> books;
-        books = userRepository.getAllUserBooks(id, entityManager);
-        entityManager.close();
-
-        return books;
+        try {
+            return userRepository.getAllUserBooks(id, entityManager);
+        } finally {
+            entityManager.close();
+        }
     }
 
     public Set<BookDto> getAllUserBooksAsBookDto(Long userId) {
-        Set<BookDto> bookDtos = new HashSet<>();
-        for (Book book : getAllUserBooks(userId)) {
-            bookDtos.add(DtoConverter.constructBookDTO(book));
-        }
-
-        return bookDtos;
+        return getAllUserBooks(userId).stream().map(book -> DtoConverter.constructBookDTO(book))
+                .collect(Collectors.toSet());
     }
 
     public Set<Role> getAllUserRoles(Long id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Set<Role> roles;
         try {
-            roles = userRepository.getAllUserRoles(id, entityManager);
+            return userRepository.getAllUserRoles(id, entityManager);
         } finally {
             entityManager.close();
         }
-        return roles;
     }
 
 }
