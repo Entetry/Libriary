@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
+import com.antonklintsevich.common.SearchData;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.exception.BookNotFoundException;
@@ -51,10 +52,10 @@ public class BookService {
         }
     }
 
-    public List<BookDto> getAllBookDtosSorted(String field, String sorttype) {
+    public List<BookDto> getAllBookDtosSorted(List<SearchData> searchdata) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return bookRepository.getAllBooksSorted(entityManager, field, sorttype).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
+            return bookRepository.getAllBooksSorted(entityManager, searchdata).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
         } finally {
             entityManager.close();
         }
@@ -79,9 +80,9 @@ public class BookService {
         }
     }
 
-    public Set<BookDto> getBooksByUsersData(String data) {
+    public List<BookDto> getBooksByUsersData(String data) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        return DtoConverter.constructBookDtoSet(bookRepository.findBooksByUsersRequest(data, entityManager));
+        return bookRepository.findBooksByUsersRequest(data, entityManager).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
     }
 
     public void create(BookDto bookDto) {

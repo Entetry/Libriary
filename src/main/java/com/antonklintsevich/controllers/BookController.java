@@ -2,6 +2,7 @@ package com.antonklintsevich.controllers;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.antonklintsevich.common.BookDto;
+import com.antonklintsevich.common.SearchData;
+import com.antonklintsevich.common.SearchPatameters;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.MyResourceNotFoundException;
 import com.antonklintsevich.exception.SubgenreNotFoundException;
@@ -43,16 +46,37 @@ public class BookController {
     @ResponseBody
     // @Secured("WRITE_AUTHORITY")
     @PreAuthorize("hasAuthority('READ_AUTHORITY')")
-    public List<BookDto> getAllBooks() {
-        return bookService.getAllBooksAsBookDTO();
+    public List<BookDto> getAllBooks(@RequestBody SearchPatameters searchPatameters ) {
+        List<SearchData> searchData=searchPatameters.getSearchData();
+        List<BookDto> bookDtos =null;
+        if(searchData==null) {
+            bookDtos = bookService.getAllBooksAsBookDTO();   
+        }
+        else if(searchData.size()==1&&searchData.get(0).sortOrder==null) {
+            bookDtos= bookService.getBooksByUsersData(searchData.get(0).name);
+        }
+        else {
+            searchData=searchData.stream().filter(search->search.name!=null).collect(Collectors.toList());
+            for(SearchData data:searchData) {
+                if(!((data.name.equals("price"))||(data.name.equals("bookname"))||(data.name.equals("author"))||(data.name.equals("numberofpages")))) {
+                 return bookDtos = bookService.getAllBooksAsBookDTO();
+                 
+                }
+                if(data.sortOrder==null || !((data.sortOrder.equals("ASC")||(data.sortOrder.equals("DESC"))))) {
+                    data.sortOrder="ASC";
+                }
+            }
+            bookDtos= bookService.getAllBookDtosSorted(searchData);
+        }
+        return bookDtos;
     }
-    @GetMapping("/books/search")
-    @ResponseBody
-    // @Secured("WRITE_AUTHORITY")
-    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
-    public Set<BookDto> getBooksByUserData(@RequestParam(name="data") String data){
-        return bookService.getBooksByUsersData(data);
-    }
+//    @GetMapping("/books/search")
+//    @ResponseBody
+//    // @Secured("WRITE_AUTHORITY")
+//    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
+//    public Set<BookDto> getBooksByUserData(@RequestParam(name="data") String data){
+//        return bookService.getBooksByUsersData(data);
+//    }
     @DeleteMapping("/books/{bookId}")
     public void delete(@PathVariable("bookId") Long bookId) {
         try {
@@ -91,19 +115,19 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
         }
     }
-    @GetMapping("/books/sort")
-    @ResponseBody
-    // @Secured("WRITE_AUTHORITY")
-    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
-    public List<BookDto> getSortedAscBooks(@RequestParam(name="field") String field,@RequestParam(name="type") String type){
-        if(!((type.equals("ASC")||(type.equals("DESC"))))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid sort type,please use ASC or DESC");
-        }
-        
-        else if(!((field.equals("price"))||(field.equals("bookname"))||(field.equals("author"))||(field.equals("numberofpages")))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid fieldname.You can only sort by bookname,author,price and numberofpages");
-        }
-        return bookService.getAllBookDtosSorted(field, type);
-    }
+//    @GetMapping("/books/sort")
+//    @ResponseBody
+//    // @Secured("WRITE_AUTHORITY")
+//    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
+//    public List<BookDto> getSortedAscBooks(@RequestParam(name="field") String field,@RequestParam(name="type") String type){
+//        if(!((type.equals("ASC")||(type.equals("DESC"))))) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid sort type,please use ASC or DESC");
+//        }
+//        
+//        else if(!((field.equals("price"))||(field.equals("bookname"))||(field.equals("author"))||(field.equals("numberofpages")))) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid fieldname.You can only sort by bookname,author,price and numberofpages");
+//        }
+//        return bookService.getAllBookDtosSorted(field, type);
+//    }
   
 }
