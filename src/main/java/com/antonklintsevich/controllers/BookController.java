@@ -49,37 +49,11 @@ public class BookController {
     @PreAuthorize("hasAuthority('READ_AUTHORITY')")
     public List<BookDto> getAllBooks(@RequestBody SearchParameters searchPatameters) {
         List<SortData> searchData = searchPatameters.getSearchData();
-        List<FilterData> filterData = searchPatameters.getFilterData();
-        List<BookDto> bookDtos = null;
-        if (searchData.isEmpty() && filterData.isEmpty()) {
-            bookDtos = bookService.getAllBooksAsBookDTO();
-        } else {
-            if (!filterData.isEmpty()) {
-                filterData = filterData.stream().filter(filter -> filter.getField() != null)
-                        .filter(filter -> filter.getFilterType() != null).filter(filter -> filter.getValue() != null)
-                        .collect(Collectors.toList());
-                searchPatameters.setFilterData(filterData);
-            }
-            if (!searchData.isEmpty()) {
-                searchData = searchData.stream().filter(search -> search.getName() != null)
-                        .collect(Collectors.toList());
-                for (SortData data : searchData) {
-                    if (!isSortDataValid(data)) {
-                        return bookDtos = bookService.getAllBooksAsBookDTO();
-                    }
-                    isSortOrderValid(data);
-                }
-                searchPatameters.setSearchData(searchData);
-            }
-            bookDtos = bookService.getAllBookDtosSorted(searchPatameters);
-
         List<FilterData> filterData=searchPatameters.getFilterData();
         List<BookDto> bookDtos = null;
         if (searchData.isEmpty()&& filterData.isEmpty()) {
             bookDtos = bookService.getAllBooksAsBookDTO();
         } 
-//        else if (searchData.size() == 1 && searchData.get(0).getSortOrder() == null) {
-//            bookDtos = bookService.getBooksByUsersData(searchData.get(0).getName());}
         else {
             if(!filterData.isEmpty()) {
             filterData=filterData.stream()
@@ -102,26 +76,7 @@ public class BookController {
             bookDtos = bookService.getAllBookDtosSorted(searchPatameters);}
         return bookDtos ;
         }
-    
 
-    private boolean isSortDataValid(SortData data) {
-        if (((data.getName().equals("price")) || (data.getName().equals("bookname"))
-                || (data.getName().equals("author")) || (data.getName().equals("numberofpages"))))
-            return true;
-        return false;
-    }
-
-    private boolean isSortOrderValid(SortData data) {
-        if (data.getSortOrder() == null
-                || !((data.getSortOrder().equals("ASC") || (data.getSortOrder().equals("DESC"))))) {
-            data.setSortOrder("ASC");
-            return false;
->>>>>>> 28a92cfb9a7830e7d550812d95a057a589611e3c
-        }
-        return true;
-    }
-
-<<<<<<< HEAD
     private boolean isSortDataValid(SortData data) {
         if (((data.getName().equals("price")) || (data.getName().equals("bookname"))
                 || (data.getName().equals("author")) || (data.getName().equals("numberofpages"))))
@@ -138,8 +93,6 @@ public class BookController {
         return true;
     }
 
-=======
->>>>>>> 28a92cfb9a7830e7d550812d95a057a589611e3c
 //    @GetMapping("/books/search")
 //    @ResponseBody
 //    // @Secured("WRITE_AUTHORITY")
