@@ -9,8 +9,10 @@ import java.util.UUID;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.antonklintsevich.common.BookDto;
-import com.antonklintsevich.common.SearchData;
-import com.antonklintsevich.common.SearchPatameters;
+import com.antonklintsevich.common.FilterData;
+import com.antonklintsevich.common.FilterType;
+import com.antonklintsevich.common.SortData;
+import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.User;
@@ -52,12 +54,16 @@ public class Main {
 //        dto.setPrice(new BigDecimal("0.05"));
 //        ObjectMapper mapper = new ObjectMapper();
 //        System.out.println(mapper.writeValueAsString(dto));
-//        SearchPatameters searchPatameters=new SearchPatameters();
-//        List<SearchData> searchDatas=new ArrayList<>();
-//        searchDatas.add(new SearchData());
-//        searchDatas.add(new SearchData());
-//        searchDatas.add(new SearchData());
+//        SearchParameters searchPatameters=new SearchParameters();
+//        List<FilterData> filterData=new ArrayList<>();
+//        filterData.add(new FilterData("bookname","Bra",FilterType.LIKE));
+//        filterData.add(new FilterData());
+//        List<SortData> searchDatas=new ArrayList<>();
+//        searchDatas.add(new SortData());
+//        searchDatas.add(new SortData());
+//        searchDatas.add(new SortData());
 //        searchPatameters.setSearchData(searchDatas);
+//        searchPatameters.setFilterData(filterData);
 //        ObjectMapper mapper = new ObjectMapper();
 //      System.out.println(mapper.writeValueAsString(searchPatameters));
 //    }

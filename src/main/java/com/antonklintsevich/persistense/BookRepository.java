@@ -3,7 +3,9 @@ package com.antonklintsevich.persistense;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -16,7 +18,10 @@ import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
 
-import com.antonklintsevich.common.SearchData;
+import com.antonklintsevich.common.FilterData;
+import com.antonklintsevich.common.FilterType;
+import com.antonklintsevich.common.SortData;
+import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.exception.BookNotFoundException;
@@ -37,46 +42,38 @@ public class BookRepository extends AbstractHibernateDao<Book> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Book> getAllBooksSorted(EntityManager entityManager, List<SearchData> searchdata) {
+    public List<Book> getAllBooksSorted(EntityManager entityManager, SearchParameters searchPatameters) {
         List<Book> books = null;
+        books = entityManager.createNativeQuery(getQuery(searchPatameters), Book.class).getResultList();
 
-        if (searchdata.size() == 1) {
-            books = entityManager.createNativeQuery(
-                    "SELECT * FROM book ORDER BY " + searchdata.get(0).name + " " + searchdata.get(0).sortOrder,
-                    Book.class).getResultList();
-        }
-        if (searchdata.size() == 2) {
-            books = entityManager
-                    .createNativeQuery(
-                            "SELECT * FROM book ORDER BY " + searchdata.get(0).name + " " + searchdata.get(0).sortOrder
-                                    + ", " + searchdata.get(1).name + " " + searchdata.get(1).sortOrder,
-                            Book.class)
-                    .getResultList();
-        }
-        if (searchdata.size() == 3) {
-            books = entityManager
-                    .createNativeQuery(
-                            "SELECT * FROM book ORDER BY " + searchdata.get(0).name + " " + searchdata.get(0).sortOrder
-                                    + ", " + searchdata.get(1).name + " " + searchdata.get(1).sortOrder + 
-                                    ", " + searchdata.get(2).name + " " + searchdata.get(2).sortOrder,
-                            Book.class)
-                    .getResultList();
-        }
-        if (searchdata.size() == 4) {
-            books = entityManager
-                    .createNativeQuery(
-                            "SELECT * FROM book ORDER BY " + searchdata.get(0).name + " " + searchdata.get(0).sortOrder
-                                    + ", " + searchdata.get(1).name + " " + searchdata.get(1).sortOrder +
-                                    ", " + searchdata.get(2).name + " " + searchdata.get(2).sortOrder + 
-                                    ", " + searchdata.get(3).name + " " + searchdata.get(3).sortOrder,
-                            Book.class)
-                    .getResultList();
-        }
         return books;
-
-//        query.setParameter("field", field);
-//        query.setParameter("sorttype", sorttype);
     }
+
+    private String getQuery(SearchParameters searchPatameters) {
+        StringBuilder sb = new StringBuilder("SELECT * FROM book");
+        if (!searchPatameters.getFilterData().isEmpty()) {
+            sb.append(" WHERE");
+            for (FilterData data : searchPatameters.getFilterData()) {
+                if(data.getFilterType()==FilterType.LIKE) {
+                    sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType()+" '" + data.getValue() + "%'"
+                    + " AND");
+                }
+                else {
+                sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType() + " " + data.getValue()
+                        + " AND");}
+            }
+            sb = sb.delete(sb.length() - 4, sb.length());
+        }
+        if (!searchPatameters.getSearchData().isEmpty()) {
+            sb.append(" ORDER BY");
+            for (SortData data : searchPatameters.getSearchData()) {
+                sb.append(" " + data.getName() + " " + data.getSortOrder() + ",");
+            }
+            sb = sb.delete(sb.length() - 1, sb.length());
+        }
+        return sb.toString();
+    }
+
 //    public Set<Book> findBooksByUsersRequest(String data, EntityManager entityManager) {
 //        Set<Book> books = new HashSet<>();
 //        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
