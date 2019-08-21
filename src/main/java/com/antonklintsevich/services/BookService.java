@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.SearchData;
+import com.antonklintsevich.common.SortData;
+import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.exception.BookNotFoundException;
@@ -52,10 +53,10 @@ public class BookService {
         }
     }
 
-    public List<BookDto> getAllBookDtosSorted(List<SearchData> searchdata) {
+    public List<BookDto> getAllBookDtosSorted(SearchParameters searchPatameters) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return bookRepository.getAllBooksSorted(entityManager, searchdata).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
+            return bookRepository.getAllBooksSorted(entityManager, searchPatameters).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
         } finally {
             entityManager.close();
         }
