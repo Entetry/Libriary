@@ -7,7 +7,6 @@ public enum FilterType {
     private FilterType(String type) {
         this.type = type;
     }
-
     public String getFilterType() {
         return this.type;
     }

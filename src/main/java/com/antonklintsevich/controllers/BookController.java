@@ -49,36 +49,32 @@ public class BookController {
     @PreAuthorize("hasAuthority('READ_AUTHORITY')")
     public List<BookDto> getAllBooks(@RequestBody SearchParameters searchPatameters) {
         List<SortData> searchData = searchPatameters.getSearchData();
-        List<FilterData> filterData=searchPatameters.getFilterData();
+        List<FilterData> filterData = searchPatameters.getFilterData();
         List<BookDto> bookDtos = null;
-        if (searchData.isEmpty()&& filterData.isEmpty()) {
+        if (searchData.isEmpty() && filterData.isEmpty()) {
             bookDtos = bookService.getAllBooksAsBookDTO();
-        } 
-//        else if (searchData.size() == 1 && searchData.get(0).getSortOrder() == null) {
-//            bookDtos = bookService.getBooksByUsersData(searchData.get(0).getName());}
-        else {
-            if(!filterData.isEmpty()) {
-            filterData=filterData.stream()
-                    .filter(filter->filter.getField()!=null)
-                    .filter(filter->filter.getFilterType()!=null)
-                    .filter(filter->filter.getValue()!=null)
-                    .collect(Collectors.toList());
-            searchPatameters.setFilterData(filterData);
+        } else {
+            if (!filterData.isEmpty()) {
+                filterData = filterData.stream().filter(filter -> filter.getField() != null)
+                        .filter(filter -> filter.getFilterType() != null).filter(filter -> filter.getValue() != null)
+                        .collect(Collectors.toList());
+                searchPatameters.setFilterData(filterData);
             }
-            if(!searchData.isEmpty()) {
-                searchData = searchData.stream().filter(search -> search.getName() != null).collect(Collectors.toList());
-            for (SortData data : searchData) {
-                if (!isSortDataValid(data)) {
-                    return bookDtos = bookService.getAllBooksAsBookDTO();
+            if (!searchData.isEmpty()) {
+                searchData = searchData.stream().filter(search -> search.getName() != null)
+                        .collect(Collectors.toList());
+                for (SortData data : searchData) {
+                    if (!isSortDataValid(data)) {
+                        return bookDtos = bookService.getAllBooksAsBookDTO();
+                    }
+                    isSortOrderValid(data);
                 }
-                isSortOrderValid(data);
+                searchPatameters.setSearchData(searchData);
             }
-            searchPatameters.setSearchData(searchData);
-            }
-            bookDtos = bookService.getAllBookDtosSorted(searchPatameters);}
-        return bookDtos ;
+            bookDtos = bookService.getAllBookDtosSorted(searchPatameters);
         }
-    
+        return bookDtos;
+    }
 
     private boolean isSortDataValid(SortData data) {
         if (((data.getName().equals("price")) || (data.getName().equals("bookname"))
