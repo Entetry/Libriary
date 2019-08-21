@@ -3,6 +3,7 @@ package com.antonklintsevich;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.FilterData;
 import com.antonklintsevich.common.FilterType;
+import com.antonklintsevich.common.GiftDto;
+import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.common.SortData;
+import com.antonklintsevich.common.UserDto;
 import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
@@ -20,11 +24,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
-//   public static void main(String[] args)throws JsonProcessingException  {
-//        //
+//  public static void main(String[] args)throws JsonProcessingException  {
+//          GiftDto giftDto =new GiftDto();
+//          giftDto.setRecipientName("entetry");
+//          giftDto.setBookDtos(new HashSet<BookDto>());
+//        ObjectMapper mapper = new ObjectMapper();
+//        System.out.println(mapper.writeValueAsString(giftDto));
 //        BCryptPasswordEncoder bp=new BCryptPasswordEncoder();
 //        System.out.println(bp.encode("123"));
-//        User user = new User();
+//        UserDto userDto = new UserDto();
+//
+//        OrderDto orderDto=new OrderDto();
+//        orderDto.setOrderdate(new Date());
+//        orderDto.setUserDto(userDto);
+//      ObjectMapper mapper = new ObjectMapper();
+//    System.out.println(mapper.writeValueAsString(orderDto));
 //        user.setDob(new Date());
 //        user.setEmail("kek@gmail.com");
 //        user.setFirstname("dima");
@@ -66,5 +80,5 @@ public class Main {
 //        searchPatameters.setFilterData(filterData);
 //        ObjectMapper mapper = new ObjectMapper();
 //      System.out.println(mapper.writeValueAsString(searchPatameters));
-//    }
+//  }
 }

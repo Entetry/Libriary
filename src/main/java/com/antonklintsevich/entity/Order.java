@@ -33,6 +33,7 @@ public class Order extends AbstractEntity {
     private Set<Book> books=new HashSet<>();
     @Column(name="price")
     private BigDecimal price;
+    private String orderStatus;
     @Override
     public Long getId() {
         return id;
@@ -76,6 +77,14 @@ public class Order extends AbstractEntity {
 
     public void addBook(Book book) {
         this.books.add(book);
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
 }

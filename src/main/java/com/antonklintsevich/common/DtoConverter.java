@@ -169,6 +169,7 @@ public class DtoConverter {
         dto.setBooks(constructBookDtoSet(user.getBooks()));
         dto.setRoles(constructRoleDtoSet(user.getRoles()));
         dto.setEnabled(user.isEnabled());
+        dto.setStatus(user.getStatus());
         return dto;
     }
 
@@ -183,6 +184,7 @@ public class DtoConverter {
         }
         user.setPassword(dto.getPassword());
         user.setUsername(dto.getUsername());
+        user.setStatus(dto.getStatus());
         return user;
 
     }

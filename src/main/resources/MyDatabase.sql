@@ -13,7 +13,9 @@ firstname VARCHAR(50) NOT NULL,
 username VARCHAR(50) NOT NULL,
 lastname VARCHAR(50) NOT NULL,
 password VARCHAR(50) NOT NULL,
-enabled BOOLEAN NOT NULL
+enabled BOOLEAN NOT NULL,
+wallet_id INTEGER,
+CONSTRAINT fk_wallet FOREIGN KEY(wallet_id) REFERENCES wallet(wallet_id)
 );
 CREATE TABLE user_book(
 user_id integer NOT NULL,
@@ -24,6 +26,12 @@ book_id integer NOT NULL,
   CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (user_id) 
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+CREATE TABLE wallet(
+wallet_id SERIAL PRIMARY KEY,
+curency VARCHAR(20) NOT NULL,
+balance NUMERIC(19,2) NOT NULL
+)
+
 CREATE TABLE genre(
 genre_id SERIAL PRIMARY KEY,
 genre_name VARCHAR(50) NOT NULL

@@ -38,7 +38,6 @@ public class UserService {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
-
     public List<UserDto> getAllUserAsUserDTO() {
         return getAllUsers().stream().map(user -> DtoConverter.constructUserDto(user)).collect(Collectors.toList());
     }

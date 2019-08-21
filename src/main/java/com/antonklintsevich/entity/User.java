@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "User")
@@ -38,9 +39,12 @@ public class User extends AbstractEntity {
     @Column
     private String username;
     private boolean enabled;
+    @Column(name="status")
+    private String status;
     private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
 
+    private Wallet wallet;
     public String getFirstname() {
         return firstname;
     }
@@ -135,6 +139,23 @@ public class User extends AbstractEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "wallet_id")
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
 }

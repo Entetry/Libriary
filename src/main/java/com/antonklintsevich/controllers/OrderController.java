@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.antonklintsevich.common.GiftDto;
 import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.OrderNotFoundException;
@@ -60,10 +61,16 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/orders")
-    public void create(@RequestParam("userId") Long userId, @RequestParam("bookId") Long... bookId) {
+    @PostMapping("/orders/gift")
+    public void create(@RequestBody GiftDto giftDto) {
 
-        orderService.create(userId, bookId);
+        orderService.sendBookAsaGift(giftDto);
+    }
+
+    @PostMapping("/orders")
+    public void create(@RequestBody OrderDto orderDto) {
+
+        orderService.create(orderDto);
 
     }
 

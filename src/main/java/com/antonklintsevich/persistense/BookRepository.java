@@ -48,7 +48,7 @@ public class BookRepository extends AbstractHibernateDao<Book> {
 
         return books;
     }
-
+    
     private String getQuery(SearchParameters searchPatameters) {
         StringBuilder sb = new StringBuilder("SELECT * FROM book");
         if (!searchPatameters.getFilterData().isEmpty()) {

@@ -13,6 +13,7 @@
 		<class>com.antonklintsevich.entity.Role</class>
 		<class>com.antonklintsevich.entity.Subgenre</class>
 		<class>com.antonklintsevich.entity.User</class>
+		<class>com.antonklintsevich.entity.Wallet</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect"

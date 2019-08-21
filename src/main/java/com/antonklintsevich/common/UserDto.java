@@ -28,6 +28,8 @@ public class UserDto implements Serializable {
     private String username;
     @JsonProperty
     private boolean enabled;
+    @JsonProperty
+    private String status;
     public UserDto(Long id, String username, String firstname, String lastname, Date dob, String email,
             String password) {
         this.id = id;
@@ -122,5 +124,13 @@ public class UserDto implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

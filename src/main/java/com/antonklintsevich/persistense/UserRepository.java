@@ -1,9 +1,9 @@
 package com.antonklintsevich.persistense;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NamedNativeQueries;
 import javax.persistence.Query;
 
 import org.hibernate.Hibernate;
@@ -13,6 +13,7 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.UserNotFoundException;
+
 @Repository
 public class UserRepository extends AbstractHibernateDao<User> implements IUserRepository {
 
@@ -26,6 +27,15 @@ public class UserRepository extends AbstractHibernateDao<User> implements IUserR
         User user = findOne(id, entityManager).orElseThrow(UserNotFoundException::new);
         Hibernate.initialize(user.getRoles());
         return user.getRoles();
+    }
+
+    public Optional<User> findByUserUsername(String username, EntityManager entityManager) {
+        Query query = entityManager.createNativeQuery("SELECT * FROM users WHERE username = ?", User.class);
+        query.setParameter(1, username);
+        return Optional.ofNullable((User) query.getSingleResult());
+        // return (User)session.createQuery("from User where User.username=
+        // :username").setParameter("username", username).uniqueResult();
+
     }
 
     @Override

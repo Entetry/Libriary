@@ -1,9 +1,6 @@
 package com.antonklintsevich.services;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.antonklintsevich.common.BookDto;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.SortData;
 import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
@@ -56,7 +52,8 @@ public class BookService {
     public List<BookDto> getAllBookDtosSorted(SearchParameters searchPatameters) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return bookRepository.getAllBooksSorted(entityManager, searchPatameters).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
+            return bookRepository.getAllBooksSorted(entityManager, searchPatameters).stream()
+                    .map(book -> DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
         } finally {
             entityManager.close();
         }
@@ -83,7 +80,8 @@ public class BookService {
 
     public List<BookDto> getBooksByUsersData(String data) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        return bookRepository.findBooksByUsersRequest(data, entityManager).stream().map(book->DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
+        return bookRepository.findBooksByUsersRequest(data, entityManager).stream()
+                .map(book -> DtoConverter.constructBookDTO(book)).collect(Collectors.toList());
     }
 
     public void create(BookDto bookDto) {

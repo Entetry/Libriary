@@ -1,8 +1,6 @@
 package com.antonklintsevich.services;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -11,14 +9,14 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.antonklintsevich.entity.Authority;
-import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.exception.UserNotFoundException;
 import com.antonklintsevich.persistense.UserRepository;
 
 @Service
@@ -37,26 +35,30 @@ public class UserServiceIml implements UserDetailsService {
         }
         Collection<? extends GrantedAuthority> authorities = user.getRoles().stream()
                 .flatMap(x -> x.getAuthorities().stream())
-                .map(authority -> new SimpleGrantedAuthority(authority.getName()))
-                .collect(Collectors.toList());
+                .map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
         entityManager.close();
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 authorities);
     }
 
-//    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-//        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRolename())).collect(Collectors.toList());
-//
-//    }
+    public String getCurrentUserUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
+    }
 
-//    private Collection<? extends GrantedAuthority> getGrantedAuthorities(Collection<Role> roles) {
-//        Set<Authority> authorities = new HashSet<>();
-//        for (Role role : roles) {
-//            authorities.addAll(role.getAuthorities());
-//        }
-//        return authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getName()))
-//                .collect(Collectors.toList());
-//
-//    }
+    public User getCurrentUser() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        return userRepository.findByUserUsername(getCurrentUserUsername(), entityManager)
+                .orElseThrow(UserNotFoundException::new);
+    }
 
+    public String getCurrentUserStatus() {
+        return getCurrentUser().getStatus();
+    }
 }
