@@ -10,6 +10,7 @@ public class SortData implements Serializable {
     @JsonProperty
 
     private String sortOrder;
+
     public String getName() {
         return name;
     }

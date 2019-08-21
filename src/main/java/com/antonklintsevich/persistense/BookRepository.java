@@ -54,13 +54,13 @@ public class BookRepository extends AbstractHibernateDao<Book> {
         if (!searchPatameters.getFilterData().isEmpty()) {
             sb.append(" WHERE");
             for (FilterData data : searchPatameters.getFilterData()) {
-                if(data.getFilterType()==FilterType.LIKE) {
-                    sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType()+" '" + data.getValue() + "%'"
-                    + " AND");
+                if (data.getFilterType() == FilterType.LIKE) {
+                    sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType() + " '"
+                            + data.getValue() + "%'" + " AND");
+                } else {
+                    sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType() + " " + data.getValue()
+                            + " AND");
                 }
-                else {
-                sb.append(" " + data.getField() + " " + data.getFilterType().getFilterType() + " " + data.getValue()
-                        + " AND");}
             }
             sb = sb.delete(sb.length() - 4, sb.length());
         }
