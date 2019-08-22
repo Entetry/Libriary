@@ -9,6 +9,7 @@ import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.entity.UserStatus;
 
 public class DtoConverter {
     public static BookDto constructBookDTO(Book book) {
@@ -169,7 +170,7 @@ public class DtoConverter {
         dto.setBooks(constructBookDtoSet(user.getBooks()));
         dto.setRoles(constructRoleDtoSet(user.getRoles()));
         dto.setEnabled(user.isEnabled());
-        dto.setStatus(user.getStatus());
+        dto.setStatus(DtoConverter.constructUserStatusDto(user.getStatus()));
         return dto;
     }
 
@@ -184,11 +185,28 @@ public class DtoConverter {
         }
         user.setPassword(dto.getPassword());
         user.setUsername(dto.getUsername());
-        user.setStatus(dto.getStatus());
+        user.setStatus(constructUserStatus(dto.getStatus()));
         return user;
 
     }
-
+    public static UserStatus constructUserStatus(UserStatusDto userStatusDto) {
+        switch (userStatusDto) {
+        case BASIC:
+            return UserStatus.BASIC;
+        case INVALID:
+            return UserStatus.INVALID;
+        default:
+            return UserStatus.BASIC;} 
+    }
+    public static UserStatusDto constructUserStatusDto(UserStatus userStatus) {
+        switch (userStatus) {
+        case BASIC:
+            return UserStatusDto.BASIC;
+        case INVALID:
+            return UserStatusDto.INVALID;
+        default:
+            return UserStatusDto.BASIC;} 
+    }
     public static OrderDto constructOrderDTO(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setBookDtos(constructBookDtoSet(order.getBooks()));

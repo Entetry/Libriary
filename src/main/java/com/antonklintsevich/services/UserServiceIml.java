@@ -1,6 +1,7 @@
 package com.antonklintsevich.services;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -15,7 +16,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.antonklintsevich.common.DtoConverter;
+import com.antonklintsevich.common.UserStatusDto;
 import com.antonklintsevich.entity.User;
+import com.antonklintsevich.entity.UserStatus;
 import com.antonklintsevich.exception.UserNotFoundException;
 import com.antonklintsevich.persistense.UserRepository;
 
@@ -29,10 +33,11 @@ public class UserServiceIml implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        User user = userRepository.findByUsername(username, entityManager);
-        if (user == null) {
+        Optional<User> userOptional = userRepository.findByUsername(username, entityManager);
+        if (!userOptional.isPresent()) {
             throw new UsernameNotFoundException("invalid username or password");
         }
+        User user = userOptional.get();
         Collection<? extends GrantedAuthority> authorities = user.getRoles().stream()
                 .flatMap(x -> x.getAuthorities().stream())
                 .map(authority -> new SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
@@ -54,11 +59,14 @@ public class UserServiceIml implements UserDetailsService {
 
     public User getCurrentUser() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        return userRepository.findByUserUsername(getCurrentUserUsername(), entityManager)
+        return userRepository.findByUsername(getCurrentUserUsername(), entityManager)
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public String getCurrentUserStatus() {
+    public UserStatus getCurrentUserStatus() {
         return getCurrentUser().getStatus();
+    }
+    public UserStatusDto getCurrentUserStatusDto() {
+        return DtoConverter.constructUserStatusDto(getCurrentUser().getStatus());
     }
 }

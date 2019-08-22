@@ -75,7 +75,7 @@ public class BookController {
             }
             bookDtos = bookService.getAllBookDtosSorted(searchPatameters);
         }
-        if("Invalid".equals(userServiceIml.getCurrentUserStatus())) {
+        if("Invalid".equals(userServiceIml.getCurrentUserStatusDto().getUserStatus())) {
             for(BookDto bookDto:bookDtos) {
                 if(bookDto.getPrice().compareTo(new BigDecimal(10.00))==-1) {
                     bookDto.setPrice(new BigDecimal(0.0));

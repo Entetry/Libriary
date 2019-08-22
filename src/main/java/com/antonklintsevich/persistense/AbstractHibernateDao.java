@@ -33,7 +33,8 @@ public abstract class AbstractHibernateDao<T extends AbstractEntity> implements 
 
     @Override
     public T create(T entity,EntityManager entityManager) {
-        entityManager.persist(entity);
+       Session session=entityManager.unwrap(Session.class);
+       session.save(entity);
         return entity;
     }
 

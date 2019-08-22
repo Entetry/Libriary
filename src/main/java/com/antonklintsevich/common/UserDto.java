@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import com.antonklintsevich.entity.UserStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDto implements Serializable {
@@ -29,7 +30,7 @@ public class UserDto implements Serializable {
     @JsonProperty
     private boolean enabled;
     @JsonProperty
-    private String status;
+    private UserStatusDto status;
     public UserDto(Long id, String username, String firstname, String lastname, Date dob, String email,
             String password) {
         this.id = id;
@@ -126,11 +127,11 @@ public class UserDto implements Serializable {
         this.enabled = enabled;
     }
 
-    public String getStatus() {
+    public UserStatusDto getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(UserStatusDto status) {
         this.status = status;
     }
 }

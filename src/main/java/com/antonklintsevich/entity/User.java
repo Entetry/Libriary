@@ -6,7 +6,10 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,7 +43,8 @@ public class User extends AbstractEntity {
     private String username;
     private boolean enabled;
     @Column(name="status")
-    private String status;
+    @Convert(converter = StatusJpaConverter.class)
+    private UserStatus status;
     private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
 
@@ -111,7 +115,7 @@ public class User extends AbstractEntity {
         this.id = id;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     public Set<Role> getRoles() {
         return roles;
@@ -141,12 +145,8 @@ public class User extends AbstractEntity {
         this.enabled = enabled;
     }
 
-    public String getStatus() {
+    public UserStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "wallet_id")
@@ -156,6 +156,10 @@ public class User extends AbstractEntity {
 
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
 }

@@ -92,3 +92,4 @@ authority_id integer NOT NULL,
   CONSTRAINT fk_authority FOREIGN KEY (authority_id) REFERENCES authority (authority_id) 
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
+CREATE TYPE userstatus AS ENUM ('Basic', 'Invalid');

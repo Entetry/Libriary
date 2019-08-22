@@ -29,20 +29,11 @@ public class UserRepository extends AbstractHibernateDao<User> implements IUserR
         return user.getRoles();
     }
 
-    public Optional<User> findByUserUsername(String username, EntityManager entityManager) {
+    @Override
+    public Optional<User> findByUsername(String username, EntityManager entityManager) {
         Query query = entityManager.createNativeQuery("SELECT * FROM users WHERE username = ?", User.class);
         query.setParameter(1, username);
         return Optional.ofNullable((User) query.getSingleResult());
-        // return (User)session.createQuery("from User where User.username=
-        // :username").setParameter("username", username).uniqueResult();
-
-    }
-
-    @Override
-    public User findByUsername(String username, EntityManager entityManager) {
-        Query query = entityManager.createNativeQuery("SELECT * FROM users WHERE username = ?", User.class);
-        query.setParameter(1, username);
-        return (User) query.getSingleResult();
         // return (User)session.createQuery("from User where User.username=
         // :username").setParameter("username", username).uniqueResult();
 

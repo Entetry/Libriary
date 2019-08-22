@@ -24,14 +24,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
-//  public static void main(String[] args)throws JsonProcessingException  {
+//public static void main(String[] args)throws JsonProcessingException  {
 //          GiftDto giftDto =new GiftDto();
 //          giftDto.setRecipientName("entetry");
 //          giftDto.setBookDtos(new HashSet<BookDto>());
 //        ObjectMapper mapper = new ObjectMapper();
 //        System.out.println(mapper.writeValueAsString(giftDto));
 //        BCryptPasswordEncoder bp=new BCryptPasswordEncoder();
-//        System.out.println(bp.encode("123"));
+//        System.out.println(bp.encode("781227"));
 //        UserDto userDto = new UserDto();
 //
 //        OrderDto orderDto=new OrderDto();
@@ -67,7 +67,7 @@ public class Main {
 //        dto.setBookname("bookname");
 //        dto.setPrice(new BigDecimal("0.05"));
 //        ObjectMapper mapper = new ObjectMapper();
-//        System.out.println(mapper.writeValueAsString(dto));
+ //       System.out.println(mapper.writeValueAsString(dto));
 //        SearchParameters searchPatameters=new SearchParameters();
 //        List<FilterData> filterData=new ArrayList<>();
 //        filterData.add(new FilterData("bookname","Bra",FilterType.LIKE));
@@ -80,5 +80,5 @@ public class Main {
 //        searchPatameters.setFilterData(filterData);
 //        ObjectMapper mapper = new ObjectMapper();
 //      System.out.println(mapper.writeValueAsString(searchPatameters));
-//  }
+ //}
 }

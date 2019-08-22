@@ -23,6 +23,7 @@ import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.BookNotFoundException;
+import com.antonklintsevich.exception.ItsFreeBookForUserException;
 import com.antonklintsevich.exception.NotEnoughMoneyException;
 import com.antonklintsevich.exception.OrderNotFoundException;
 import com.antonklintsevich.exception.UserAlreadyHasThisBookException;
@@ -89,15 +90,16 @@ public class OrderService {
         transaction.begin();
         Order order = new Order();
         BigDecimal totalPrice = new BigDecimal(0);
-        order.setUser(userServiceIml.getCurrentUser());
+        User user = userServiceIml.getCurrentUser();
+        order.setUser(user);
+        Set<Book> userBooks = userRepository.getAllUserBooks(order.getUser().getId(), entityManager);
         for (BookDto bookDto : orderDto.getBookDtos()) {
             Book book = bookRepository.findOne(bookDto.getId(), entityManager).orElseThrow(BookNotFoundException::new);
-            if (userRepository.getAllUserBooks(order.getUser().getId(), entityManager).contains(book)) {
+            if (userBooks.contains(book)) {
                 throw new UserAlreadyHasThisBookException();
             }
-            if ("Invalid".equals(userRepository.findByUsername(userServiceIml.getCurrentUserUsername(), entityManager)
-                    .getStatus())) {
-                if (!(book.getPrice().compareTo(new BigDecimal(10.00)) == -1)) {
+            if ("Invalid".equals(user.getStatus().getUserStatus())) {
+                if (book.getPrice().compareTo(new BigDecimal(10.00)) != -1) {
                     totalPrice = totalPrice.add(book.getPrice());
                 }
             } else {
@@ -108,9 +110,6 @@ public class OrderService {
         order.setOrderdate(orderDto.getOrderdate());
         order.setPrice(totalPrice);
         order.setOrderStatus("inprogress");
-        if (order.getUser().getWallet().getBalance().compareTo(totalPrice) == -1)
-            throw new NotEnoughMoneyException();
-
         try {
             orderRepository.create(order, entityManager);
             confirmOrder(order, entityManager);
@@ -123,18 +122,48 @@ public class OrderService {
         }
     }
 
-    private void confirmOrder(Order order, EntityManager entityManager) {
+    private synchronized void confirmOrder(Order order, EntityManager entityManager) {
+        User user = userRepository.findOne(order.getUser().getId(), entityManager)
+                .orElseThrow(UserNotFoundException::new);
+        if (user.getWallet().getBalance().compareTo(order.getPrice()) == -1) {
+            throw new NotEnoughMoneyException();
+        }
         if ("inprogress".equals(order.getOrderStatus())) {
-            User user = userRepository.findOne(order.getUser().getId(), entityManager)
-                    .orElseThrow(UserNotFoundException::new);
-            for (Book book : order.getBooks()) {
-                user.addBook(book);
-            }
+            order.getBooks().forEach(book ->{ 
+                if (user.getBooks().contains(book)) {
+                    throw new UserAlreadyHasThisBookException();
+                }
+                user.addBook(book);});
             user.getWallet().setBalance(order.getUser().getWallet().getBalance().subtract(order.getPrice()));
             order.setOrderStatus("completed");
             userRepository.update(user, entityManager);
             orderRepository.update(order, entityManager);
         }
+
+    }
+
+    private synchronized void confirmGift(Order order, GiftDto giftDto, EntityManager entityManager) {
+        User user = order.getUser();
+        User recipient = userRepository.findByUsername(giftDto.getRecipientName(), entityManager)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user.getWallet().getBalance().compareTo(order.getPrice()) == -1) {
+            throw new NotEnoughMoneyException();
+        }
+        if ("gift".equals(order.getOrderStatus())) {
+            user.getWallet().setBalance(order.getUser().getWallet().getBalance().subtract(order.getPrice()));
+            order.getBooks().forEach(book -> {
+                if (recipient.getBooks().contains(book)) {
+                    throw new UserAlreadyHasThisBookException();
+                }
+                recipient.addBook(book);
+            });
+            userRepository.update(user, entityManager);
+            userRepository.update(recipient, entityManager);
+            order.setOrderStatus("completed");
+            orderRepository.update(order, entityManager);
+        }
+
     }
 
     public void sendBookAsaGift(GiftDto giftDto) {
@@ -143,18 +172,22 @@ public class OrderService {
         transaction.begin();
         Order order = new Order();
         BigDecimal totalPrice = new BigDecimal(0);
-        order.setUser(userRepository.findByUserUsername(userServiceIml.getCurrentUserUsername(), entityManager)
+        order.setUser(userRepository.findByUsername(userServiceIml.getCurrentUserUsername(), entityManager)
                 .orElseThrow(UserNotFoundException::new));
-        User recipient = userRepository.findByUsername(giftDto.getRecipientName(), entityManager);
+        User recipient = userRepository.findByUsername(giftDto.getRecipientName(), entityManager)
+                .orElseThrow(UserNotFoundException::new);
         for (BookDto bookDto : giftDto.getBookDtos()) {
             Book book = bookRepository.findOne(bookDto.getId(), entityManager).orElseThrow(BookNotFoundException::new);
-            if (recipient.getBooks().contains(book))
+            if (recipient.getBooks().contains(book)) {
                 throw new UserAlreadyHasThisBookException();
-            recipient.addBook(book);
+            }
+            if (("Invalid".equals(recipient.getStatus().getUserStatus())) && (book.getPrice().compareTo(new BigDecimal(10.00)) == -1)) {
+                throw new ItsFreeBookForUserException("You cannot send this book,its free for ",
+                        recipient.getUsername());
+            }
+            order.addBook(book);
             totalPrice = totalPrice.add(book.getPrice());
         }
-
-        order.setBooks(DtoConverter.constructBookSet(giftDto.getBookDtos()));
         order.setOrderdate(new Date());
         order.setPrice(totalPrice);
         order.setOrderStatus("gift");
@@ -163,13 +196,7 @@ public class OrderService {
 
         try {
             orderRepository.create(order, entityManager);
-            if ("gift".equals(order.getOrderStatus())) {
-                recipient.getWallet().setBalance(order.getUser().getWallet().getBalance().subtract(totalPrice));
-                userRepository.update(order.getUser(), entityManager);
-                userRepository.update(recipient, entityManager);
-                order.setOrderStatus("completed");
-                orderRepository.update(order, entityManager);
-            }
+            confirmGift(order, giftDto, entityManager);
             transaction.commit();
         } catch (Exception e) {
             LOGGER.error("An exeption ocurred!", e);
