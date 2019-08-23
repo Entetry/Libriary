@@ -25,6 +25,8 @@ public class OrderDto implements Serializable {
     private Set<BookDto> bookDtos=new HashSet<>();
     @JsonProperty
     private BigDecimal price;
+    @JsonProperty
+    private OrderStatusDto orderStatus;
 
     public Long getId() {
         return id;
@@ -68,5 +70,13 @@ public class OrderDto implements Serializable {
 
     public void setBookDtos(Set<BookDto> bookDtos) {
         this.bookDtos = bookDtos;
+    }
+
+    public OrderStatusDto getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatusDto orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

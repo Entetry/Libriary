@@ -6,6 +6,7 @@ import java.util.Set;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Genre;
 import com.antonklintsevich.entity.Order;
+import com.antonklintsevich.entity.OrderStatus;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.entity.User;
@@ -207,6 +208,28 @@ public class DtoConverter {
         default:
             return UserStatusDto.BASIC;} 
     }
+    public static OrderStatus constructOrderStatus(OrderStatusDto orderStatusDto) {
+        switch (orderStatusDto) {
+        case COMPLETED:
+            return OrderStatus.COMPLETED;
+        case GIFT:
+            return OrderStatus.GIFT;
+        case INPROGRESS:
+            return OrderStatus.INPROGRESS;
+        default:
+            return OrderStatus.INPROGRESS;} 
+    }
+    public static OrderStatusDto constructOrderStatusDto(OrderStatus orderStatus) {
+        switch (orderStatus) {
+        case COMPLETED:
+            return OrderStatusDto.COMPLETED;
+        case GIFT:
+            return OrderStatusDto.GIFT;
+        case INPROGRESS:
+            return OrderStatusDto.INPROGRESS;
+        default:
+            return OrderStatusDto.INPROGRESS;} 
+    }
     public static OrderDto constructOrderDTO(Order order) {
         OrderDto orderDto = new OrderDto();
         orderDto.setBookDtos(constructBookDtoSet(order.getBooks()));
@@ -214,7 +237,7 @@ public class DtoConverter {
         orderDto.setPrice(order.getPrice());
         orderDto.setUserDto(constructUserDto(order.getUser()));
         orderDto.setId(order.getId());
-
+        orderDto.setOrderStatus(constructOrderStatusDto(order.getOrderStatus()));
         return orderDto;
     }
 
@@ -226,7 +249,7 @@ public class DtoConverter {
             order.setId(orderDto.getId());
         }
         order.setBooks(constructBookSet(orderDto.getBookDtos()));
-
+        order.setOrderStatus(constructOrderStatus(orderDto.getOrderStatus()));
         return order;
     }
 }

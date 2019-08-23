@@ -7,7 +7,9 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,12 +30,13 @@ public class Order extends AbstractEntity {
     private User user;
     @Column(name="order_date")
     private Date orderdate;
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany(cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
     @JoinTable(name = "order_book", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books=new HashSet<>();
     @Column(name="price")
     private BigDecimal price;
-    private String orderStatus;
+    @Convert(converter = OrderStatusJpaConverter.class)
+    private OrderStatus orderStatus;
     @Override
     public Long getId() {
         return id;
@@ -79,11 +82,11 @@ public class Order extends AbstractEntity {
         this.books.add(book);
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

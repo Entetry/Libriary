@@ -21,6 +21,7 @@ import com.antonklintsevich.common.GiftDto;
 import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
+import com.antonklintsevich.entity.OrderStatus;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.ItsFreeBookForUserException;
@@ -109,7 +110,7 @@ public class OrderService {
         }
         order.setOrderdate(orderDto.getOrderdate());
         order.setPrice(totalPrice);
-        order.setOrderStatus("inprogress");
+        order.setOrderStatus(OrderStatus.INPROGRESS);
         try {
             orderRepository.create(order, entityManager);
             confirmOrder(order, entityManager);
@@ -128,14 +129,14 @@ public class OrderService {
         if (user.getWallet().getBalance().compareTo(order.getPrice()) == -1) {
             throw new NotEnoughMoneyException();
         }
-        if ("inprogress".equals(order.getOrderStatus())) {
+        if ("inprogress".equals(order.getOrderStatus().getStatus())) {
             order.getBooks().forEach(book ->{ 
                 if (user.getBooks().contains(book)) {
                     throw new UserAlreadyHasThisBookException();
                 }
                 user.addBook(book);});
             user.getWallet().setBalance(order.getUser().getWallet().getBalance().subtract(order.getPrice()));
-            order.setOrderStatus("completed");
+            order.setOrderStatus(OrderStatus.COMPLETED);
             userRepository.update(user, entityManager);
             orderRepository.update(order, entityManager);
         }
@@ -150,7 +151,7 @@ public class OrderService {
         if (user.getWallet().getBalance().compareTo(order.getPrice()) == -1) {
             throw new NotEnoughMoneyException();
         }
-        if ("gift".equals(order.getOrderStatus())) {
+        if ("gift".equals(order.getOrderStatus().getStatus())) {
             user.getWallet().setBalance(order.getUser().getWallet().getBalance().subtract(order.getPrice()));
             order.getBooks().forEach(book -> {
                 if (recipient.getBooks().contains(book)) {
@@ -160,7 +161,7 @@ public class OrderService {
             });
             userRepository.update(user, entityManager);
             userRepository.update(recipient, entityManager);
-            order.setOrderStatus("completed");
+            order.setOrderStatus(OrderStatus.COMPLETED);
             orderRepository.update(order, entityManager);
         }
 
@@ -190,7 +191,7 @@ public class OrderService {
         }
         order.setOrderdate(new Date());
         order.setPrice(totalPrice);
-        order.setOrderStatus("gift");
+        order.setOrderStatus(OrderStatus.GIFT);
         if (order.getUser().getWallet().getBalance().compareTo(totalPrice) == -1)
             throw new NotEnoughMoneyException();
 
