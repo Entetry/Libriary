@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.antonklintsevich.common.GiftDto;
-import com.antonklintsevich.common.OrderDto;
+import com.antonklintcevich.common.GiftDto;
+import com.antonklintcevich.common.OrderDto;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.OrderNotFoundException;
 import com.antonklintsevich.services.OrderService;

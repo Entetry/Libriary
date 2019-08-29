@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.antonklintsevich.common.BookDto;
-import com.antonklintsevich.common.UserDto;
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.UserDto;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.RoleNotFoundException;
 import com.antonklintsevich.exception.UserNotFoundException;
@@ -45,7 +45,7 @@ public class UserController {
         }
 
     }
-
+    
     @PutMapping("/users/addrole")
     public void addRole(@RequestParam("userId") String userId, @RequestParam("roleId") String roleId) {
         try {

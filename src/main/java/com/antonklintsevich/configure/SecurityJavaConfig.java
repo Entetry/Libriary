@@ -6,6 +6,7 @@ import javax.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,7 +23,7 @@ import com.antonklintsevich.security.MySavedRequestAwareAuthenticationSuccessHan
 import com.antonklintsevich.security.RestAuthenticationEntryPoint;
 import com.antonklintsevich.services.UserServiceIml;
 
-//@Configuration
+@Configuration
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @ComponentScan("com.antonklintsevich")
@@ -59,10 +60,10 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 //            .authenticationEntryPoint(restAuthenticationEntryPoint)
 //            .and()
 //            .authorizeRequests(
-
-                .antMatchers("/**").authenticated().antMatchers("/login").permitAll()
-
-                .antMatchers("/users/**").authenticated().and().formLogin().successHandler(mySuccessHandler)
+                
+//                .antMatchers("/**").authenticated().antMatchers("/login").permitAll()
+                .antMatchers("/books/**").permitAll()
+//                .antMatchers("/users/**").authenticated().and().formLogin().successHandler(mySuccessHandler)
 //                 .antMatchers("/books/**").hasRole("ADMIN")
 
 //            .failureHandler(myFailureHandler)

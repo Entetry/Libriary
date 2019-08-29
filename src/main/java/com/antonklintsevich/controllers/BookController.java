@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.antonklintsevich.common.BookDto;
-import com.antonklintsevich.common.FilterData;
-import com.antonklintsevich.common.SortData;
-import com.antonklintsevich.common.SearchParameters;
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.FilterData;
+import com.antonklintcevich.common.GenreDto;
+import com.antonklintcevich.common.SearchParameters;
+import com.antonklintcevich.common.SortData;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.MyResourceNotFoundException;
 import com.antonklintsevich.exception.SubgenreNotFoundException;
@@ -44,11 +45,17 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, exc.getMessage(), exc);
         }
     }
-
-    @GetMapping("/books")
+    @GetMapping("/books/genres")
+    @ResponseBody
+    public List<GenreDto> getAllGenres() {
+        return bookService.getAllGenres();
+        
+    }
+    
+    @PostMapping("/books")
     @ResponseBody
     // @Secured("WRITE_AUTHORITY")
-    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
+//    @PreAuthorize("hasAuthority('READ_AUTHORITY')")
     public List<BookDto> getAllBooks(@RequestBody SearchParameters searchPatameters) {
         List<SortData> searchData = searchPatameters.getSearchData();
         List<FilterData> filterData = searchPatameters.getFilterData();
@@ -75,13 +82,13 @@ public class BookController {
             }
             bookDtos = bookService.getAllBookDtosSorted(searchPatameters);
         }
-        if("Invalid".equals(userServiceIml.getCurrentUserStatusDto().getUserStatus())) {
-            for(BookDto bookDto:bookDtos) {
-                if(bookDto.getPrice().compareTo(new BigDecimal(10.00))==-1) {
-                    bookDto.setPrice(new BigDecimal(0.0));
-                }
-            }
-        }
+//        if("Invalid".equals(userServiceIml.getCurrentUserStatusDto().getUserStatus())) {
+//            for(BookDto bookDto:bookDtos) {
+//                if(bookDto.getPrice().compareTo(new BigDecimal(10.00))==-1) {
+//                    bookDto.setPrice(new BigDecimal(0.0));
+//                }
+//            }
+//        }
         return bookDtos;
     }
 
@@ -118,7 +125,7 @@ public class BookController {
     }
 
     @PreAuthorize("hasAuthority('WRITE_AUTHORITY')")
-    @PostMapping("/books")
+    @PostMapping("/books/create")
 
     public void create(@RequestBody BookDto bookDto) {
 

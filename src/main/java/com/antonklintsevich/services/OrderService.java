@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.antonklintsevich.common.BookDto;
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.GiftDto;
+import com.antonklintcevich.common.OrderDto;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.GiftDto;
-import com.antonklintsevich.common.OrderDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Order;
 import com.antonklintsevich.entity.OrderStatus;

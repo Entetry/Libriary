@@ -39,11 +39,9 @@ public class User extends AbstractEntity {
     private Date dob;
     private String email;
     private String password;
-    @Column
     private String username;
     private boolean enabled;
-    @Column(name="status")
-    @Convert(converter = StatusJpaConverter.class)
+
     private UserStatus status;
     private Set<Role> roles;
     private Set<Book> books = new HashSet<>();
@@ -144,7 +142,7 @@ public class User extends AbstractEntity {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
+    @Convert(converter = StatusJpaConverter.class)
     public UserStatus getStatus() {
         return status;
     }

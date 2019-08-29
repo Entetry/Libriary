@@ -2,9 +2,10 @@ package com.antonklintsevich.entity;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
 @Converter
 public class StatusJpaConverter implements AttributeConverter<UserStatus, String> {
-    
+
     @Override
     public String convertToDatabaseColumn(UserStatus userStatus) {
         if (userStatus == null) {
@@ -12,7 +13,7 @@ public class StatusJpaConverter implements AttributeConverter<UserStatus, String
         }
         return userStatus.toString();
     }
-  
+
     @Override
     public UserStatus convertToEntityAttribute(String string) {
         if (string == null) {
@@ -24,5 +25,5 @@ public class StatusJpaConverter implements AttributeConverter<UserStatus, String
             return null;
         }
     }
-  
- }
+
+}

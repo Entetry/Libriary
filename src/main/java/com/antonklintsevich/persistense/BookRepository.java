@@ -1,27 +1,17 @@
 package com.antonklintsevich.persistense;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
 
-import com.antonklintsevich.common.FilterData;
-import com.antonklintsevich.common.FilterType;
-import com.antonklintsevich.common.SortData;
-import com.antonklintsevich.common.SearchParameters;
+import com.antonklintcevich.common.FilterData;
+import com.antonklintcevich.common.FilterType;
+import com.antonklintcevich.common.SearchParameters;
+import com.antonklintcevich.common.SortData;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.exception.BookNotFoundException;

@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.antonklintsevich.common.BookDto;
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.UserDto;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.UserDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Role;
 import com.antonklintsevich.entity.User;

@@ -1,28 +1,5 @@
 package com.antonklintsevich;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.antonklintsevich.common.BookDto;
-import com.antonklintsevich.common.FilterData;
-import com.antonklintsevich.common.FilterType;
-import com.antonklintsevich.common.GiftDto;
-import com.antonklintsevich.common.OrderDto;
-import com.antonklintsevich.common.SortData;
-import com.antonklintsevich.common.UserDto;
-import com.antonklintsevich.common.SearchParameters;
-import com.antonklintsevich.entity.Book;
-import com.antonklintsevich.entity.Order;
-import com.antonklintsevich.entity.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class Main {
 //public static void main(String[] args)throws JsonProcessingException  {
 //          GiftDto giftDto =new GiftDto();

@@ -16,8 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.antonklintcevich.common.UserStatusDto;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.UserStatusDto;
 import com.antonklintsevich.entity.User;
 import com.antonklintsevich.entity.UserStatus;
 import com.antonklintsevich.exception.UserNotFoundException;

@@ -1,6 +1,7 @@
 package com.antonklintsevich.services;
 
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -12,15 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.antonklintsevich.common.BookDto;
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.GenreDto;
+import com.antonklintcevich.common.SearchParameters;
 import com.antonklintsevich.common.DtoConverter;
-import com.antonklintsevich.common.SearchParameters;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Subgenre;
 import com.antonklintsevich.exception.BookNotFoundException;
 import com.antonklintsevich.exception.MyResourceNotFoundException;
 import com.antonklintsevich.exception.SubgenreNotFoundException;
 import com.antonklintsevich.persistense.BookRepository;
+import com.antonklintsevich.persistense.GenreRepository;
 import com.antonklintsevich.persistense.SubgenreRepository;
 
 @Service
@@ -32,7 +35,8 @@ public class BookService {
     private SubgenreRepository subgenreRepository;
     @Autowired
     private EntityManagerFactory entityManagerFactory;
-
+    @Autowired
+    private GenreRepository genreRepository;
     public void delete(Long bookId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -48,7 +52,11 @@ public class BookService {
             entityManager.close();
         }
     }
-
+    public List<GenreDto> getAllGenres(){
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        return (List<GenreDto>)genreRepository.findAll(entityManager)
+        .stream().map(DtoConverter::constructGernreDto).collect(Collectors.toList());
+    }
     public List<BookDto> getAllBookDtosSorted(SearchParameters searchPatameters) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {

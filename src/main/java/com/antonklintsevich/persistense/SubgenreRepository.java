@@ -6,4 +6,5 @@ import com.antonklintsevich.entity.Subgenre;
 @Repository
 public class SubgenreRepository extends AbstractHibernateDao<Subgenre> {
 
+    
 }

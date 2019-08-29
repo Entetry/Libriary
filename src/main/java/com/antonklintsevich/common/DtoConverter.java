@@ -2,7 +2,16 @@ package com.antonklintsevich.common;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.antonklintcevich.common.BookDto;
+import com.antonklintcevich.common.GenreDto;
+import com.antonklintcevich.common.OrderDto;
+import com.antonklintcevich.common.OrderStatusDto;
+import com.antonklintcevich.common.RoleDto;
+import com.antonklintcevich.common.SubgenreDto;
+import com.antonklintcevich.common.UserDto;
+import com.antonklintcevich.common.UserStatusDto;
 import com.antonklintsevich.entity.Book;
 import com.antonklintsevich.entity.Genre;
 import com.antonklintsevich.entity.Order;
@@ -66,6 +75,7 @@ public class DtoConverter {
         if (genreDto.getId() != null) {
             genre.setId(genreDto.getId());
         }
+        genre.setSubgenres(genreDto.getSubgenres().stream().map(DtoConverter::constructSubgenreFromDto).collect(Collectors.toList()));
         return genre;
     }
 
@@ -73,13 +83,14 @@ public class DtoConverter {
         GenreDto genreDto = new GenreDto();
         genreDto.setId(genre.getId());
         genreDto.setGenrename(genre.getGenrename());
+        genreDto.setSubgenres(genre.getSubgenres().stream().map(DtoConverter::constructSubgernreDto).collect(Collectors.toList()));
         return genreDto;
     }
 
     public static Set<SubgenreDto> constructSubgenreDtoSet(Set<Subgenre> subgenres) {
         Set<SubgenreDto> subgenreDtos = new HashSet<>();
         for (Subgenre subgenre : subgenres) {
-            subgenreDtos.add(constructGernreDto(subgenre));
+            subgenreDtos.add(constructSubgernreDto(subgenre));
         }
         return subgenreDtos;
 
@@ -104,11 +115,10 @@ public class DtoConverter {
         return subgenre;
     }
 
-    public static SubgenreDto constructGernreDto(Subgenre subgenre) {
+    public static SubgenreDto constructSubgernreDto(Subgenre subgenre) {
         SubgenreDto subgenreDto = new SubgenreDto();
         subgenreDto.setId(subgenre.getId());
         subgenreDto.setSubgenrename(subgenre.getSubgenrename());
-        subgenreDto.setGenreDto(constructGernreDto(subgenre.getGenre()));
         return subgenreDto;
     }
 
